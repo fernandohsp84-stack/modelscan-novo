@@ -4,805 +4,2390 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ModelScan — Catalogação de Modelos</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>ModelScan — Gestão de Risco de Modelo</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
 :root {
-  --blue:    #003087;
-  --blue2:   #00206a;
-  --orange:  #F58220;
-  --orange2: #d96f10;
-  --white:   #ffffff;
-  --g50:     #f7f8fa;
-  --g100:    #eef0f4;
-  --g200:    #dde0e8;
-  --g300:    #bcc1cc;
-  --g500:    #7a8194;
-  --g700:    #3d4455;
-  --g900:    #1a1f2e;
-  --green:   #1a7a4a;
-  --green-bg:#eaf4ef;
-  --red:     #b91c1c;
-  --red-bg:  #fef2f2;
-  --yel:     #92640a;
-  --yel-bg:  #fefce8;
-  --r:       6px;
-  --rl:      10px;
-  --sh:      0 1px 4px rgba(0,0,0,0.08);
-  --t:       0.16s ease;
-  --f:       'Inter',sans-serif;
+  --blue:      #005CA9;
+  --blue-d:    #003F7A;
+  --blue-m:    #1A6DC4;
+  --blue-l:    #EBF3FB;
+  --orange:    #F47920;
+  --orange-l:  #FEF2E8;
+  --white:     #FFFFFF;
+  --off:       #F5F6F8;
+  --g100:      #ECEEF2;
+  --g200:      #D8DCE5;
+  --g300:      #B8BEC9;
+  --g500:      #717A8C;
+  --g700:      #3C4353;
+  --g900:      #1A1D23;
+  --green:     #1B7F4F;
+  --green-l:   #E6F4EE;
+  --red:       #B83232;
+  --red-l:     #FBECEC;
+  --amber:     #9A6200;
+  --amber-l:   #FDF5E6;
+  --teal:      #0D7377;
+  --teal-l:    #E5F3F4;
+
+–r-s: 6px; –r-m: 10px; –r-l: 14px; –r-xl: 20px;
+–sh-s: 0 1px 3px rgba(0,0,0,.07);
+–sh-m: 0 4px 16px rgba(0,0,0,.09);
+–sh-l: 0 12px 40px rgba(0,0,0,.12);
+
+–font:    ‘DM Sans’, sans-serif;
+–serif:   ‘Instrument Serif’, Georgia, serif;
+–mono:    ‘DM Mono’, monospace;
+
+–nav-w:   220px;
+–head-h:  58px;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--f);background:var(--g50);color:var(--g900);min-height:100vh;font-size:14px;line-height:1.5;}
 
-/* HEADER */
-.hdr{background:var(–blue);position:sticky;top:0;z-index:200;box-shadow:0 2px 6px rgba(0,48,135,.2);}
-.hdr-inner{max-width:800px;margin:0 auto;padding:0 28px;display:flex;align-items:center;height:54px;gap:16px;}
-.logo-box{width:32px;height:32px;background:var(–white);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.logo-box svg{width:20px;height:20px;}
-.brand{display:flex;flex-direction:column;margin-left:10px;}
-.brand-sup{font-size:9px;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:2px;text-transform:uppercase;}
-.brand-name{font-size:15px;font-weight:700;color:var(–white);letter-spacing:-.2px;}
-.brand-name b{color:var(–orange);}
-.hdr-div{width:1px;height:24px;background:rgba(255,255,255,.12);}
-.hdr-lbl{font-size:12px;color:rgba(255,255,255,.45);font-weight:400;}
-.hdr-sp{flex:1;}
-.hdr-env{background:rgba(245,130,32,.15);border:1px solid rgba(245,130,32,.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600;color:var(–orange);letter-spacing:.8px;text-transform:uppercase;}
-.prog{height:3px;background:var(–blue2);}
-.prog-fill{height:100%;background:var(–orange);transition:width .5s ease;width:10%;}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* LAYOUT */
-.page{max-width:760px;margin:0 auto;padding:32px 24px 80px;}
+html, body { height: 100%; }
 
-/* STEPS */
-.steps{display:flex;align-items:center;margin-bottom:28px;}
-.step{display:flex;align-items:center;gap:7px;flex:1;position:relative;}
-.step:not(:last-child)::after{content:’’;position:absolute;left:calc(28px + 7px);right:0;top:50%;transform:translateY(-50%);height:1px;background:var(–g200);z-index:0;}
-.step.done:not(:last-child)::after{background:var(–blue);}
-.sdot{width:28px;height:28px;border-radius:50%;border:2px solid var(–g200);background:var(–white);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(–g300);flex-shrink:0;position:relative;z-index:1;transition:all var(–t);}
-.step.active .sdot{border-color:var(–blue);background:var(–blue);color:var(–white);}
-.step.done .sdot{border-color:var(–blue);background:var(–blue);color:var(–white);}
-.slbl{font-size:11px;font-weight:500;color:var(–g300);}
-.step.active .slbl{color:var(–blue);}
-.step.done .slbl{color:var(–g500);}
-@media(max-width:480px){.slbl{display:none;}}
+body {
+font-family: var(–font);
+background: var(–off);
+color: var(–g900);
+font-size: 14px;
+line-height: 1.5;
+-webkit-font-smoothing: antialiased;
+overflow: hidden;
+}
 
-/* HEADINGS */
-.sh{margin-bottom:20px;}
-.sh h2{font-size:19px;font-weight:700;color:var(–g900);letter-spacing:-.3px;margin-bottom:3px;}
-.sh p{font-size:13px;color:var(–g500);}
+/* ═══════════════════════════════════════════════
+LAYOUT SHELL
+═══════════════════════════════════════════════ */
+.shell { display: flex; height: 100vh; overflow: hidden; }
 
-/* CARD */
-.card{background:var(–white);border:1px solid var(–g200);border-radius:var(–rl);box-shadow:var(–sh);margin-bottom:14px;overflow:hidden;}
-.cs{padding:18px 22px;border-bottom:1px solid var(–g100);}
-.cs:last-child{border-bottom:none;}
-.cs-ttl{font-size:10px;font-weight:600;color:var(–g300);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+/* ── SIDEBAR ── */
+.sidebar {
+width: var(–nav-w);
+background: var(–blue-d);
+display: flex;
+flex-direction: column;
+flex-shrink: 0;
+position: relative;
+z-index: 100;
+}
 
-/* FORM */
-.f{margin-bottom:13px;}
-.f:last-child{margin-bottom:0;}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-@media(max-width:500px){.frow{grid-template-columns:1fr;}}
-label{display:block;font-size:11px;font-weight:500;color:var(–g700);margin-bottom:4px;}
-.req{color:var(–orange);margin-left:2px;}
-input[type=text],input[type=url],input[type=password],input[type=email],textarea,select{
-width:100%;border:1px solid var(–g200);border-radius:var(–r);padding:8px 11px;
-font-family:var(–f);font-size:13px;color:var(–g900);background:var(–white);
-transition:border-color var(–t),box-shadow var(–t);outline:none;-webkit-appearance:none;}
-input:focus,textarea:focus,select:focus{border-color:var(–blue);box-shadow:0 0 0 3px rgba(0,48,135,.08);}
-textarea{resize:vertical;min-height:78px;}
-.irow{display:flex;gap:7px;}
-.irow input{flex:1;}
-.krow{display:flex;gap:6px;}
-.krow input{flex:1;font-family:monospace;font-size:12px;}
-.bico{background:var(–g100);border:1px solid var(–g200);border-radius:var(–r);padding:0 10px;cursor:pointer;color:var(–g500);font-size:14px;transition:all var(–t);}
-.bico:hover{background:var(–g200);}
+.sidebar-brand {
+padding: 20px 18px 16px;
+border-bottom: 1px solid rgba(255,255,255,.08);
+}
 
-/* SOURCES */
-.srcg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
-@media(max-width:500px){.srcg{grid-template-columns:repeat(2,1fr);}}
-.sb{border:1px solid var(–g200);border-radius:var(–r);background:var(–white);padding:9px 7px;cursor:pointer;text-align:center;transition:all var(–t);display:flex;flex-direction:column;align-items:center;gap:4px;user-select:none;}
-.sb:hover{border-color:var(–g300);background:var(–g50);}
-.sb.sel{border-color:var(–blue);background:#f0f4ff;}
-.si{font-size:17px;line-height:1;}
-.sl{font-size:11px;font-weight:500;color:var(–g700);}
-.sb.sel .sl{color:var(–blue);}
+.brand-mark {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 2px;
+}
 
-/* DROP */
-.dz{border:1.5px dashed var(–g200);border-radius:var(–r);background:var(–g50);padding:22px;text-align:center;cursor:pointer;position:relative;transition:all var(–t);}
-.dz:hover{border-color:var(–blue);background:#f0f4ff;}
-.dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.dl{font-size:12px;color:var(–g500);margin-top:5px;}
-.dh{font-size:11px;color:var(–g300);margin-top:2px;}
-.flist{display:flex;flex-direction:column;gap:5px;margin-top:8px;}
-.fi{display:flex;align-items:center;gap:7px;background:var(–g50);border:1px solid var(–g100);border-radius:var(–r);padding:7px 11px;}
-.fii{font-size:13px;flex-shrink:0;}
-.fin{flex:1;font-size:11px;color:var(–g700);font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.fis{font-size:10px;color:var(–g300);flex-shrink:0;}
-.frm{background:none;border:none;color:var(–g300);cursor:pointer;font-size:15px;line-height:1;flex-shrink:0;transition:color var(–t);}
-.frm:hover{color:var(–red);}
+.brand-icon {
+width: 30px; height: 30px;
+background: var(–orange);
+border-radius: 7px;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0;
+}
 
-/* CHIPS */
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
-.chip{display:flex;align-items:center;gap:4px;background:#f0f4ff;border:1px solid #c9d4f0;border-radius:20px;padding:3px 9px;font-size:11px;color:var(–blue);font-family:monospace;max-width:280px;}
-.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.crm{background:none;border:none;color:rgba(0,48,135,.4);cursor:pointer;font-size:13px;line-height:1;padding:0;flex-shrink:0;transition:color var(–t);}
-.crm:hover{color:var(–red);}
+.brand-icon svg { display: block; }
 
-/* NOTICE */
-.notice{display:flex;gap:9px;padding:11px 13px;border-radius:var(–r);border:1px solid;font-size:13px;line-height:1.5;margin-bottom:14px;}
-.notice.info{border-color:#c9d4f0;background:#f0f4ff;color:var(–g700);}
-.notice.warn{border-color:#fcd34d;background:var(–yel-bg);color:var(–yel);}
-.notice.ok  {border-color:#6ee7b7;background:var(–green-bg);color:var(–green);}
-.ni{flex-shrink:0;font-size:14px;margin-top:1px;}
+.brand-name {
+font-family: var(–serif);
+font-size: 17px;
+color: #fff;
+letter-spacing: -0.2px;
+line-height: 1;
+}
 
-/* BUTTONS */
-.brow{display:flex;align-items:center;justify-content:space-between;padding-top:18px;gap:10px;}
-.btn{border-radius:var(–r);font-family:var(–f);font-size:13px;font-weight:600;cursor:pointer;transition:all var(–t);display:inline-flex;align-items:center;gap:5px;padding:9px 18px;border:none;}
-.btn-p{background:var(–blue);color:var(–white);}
-.btn-p:hover{background:var(–blue2);box-shadow:0 2px 8px rgba(0,48,135,.2);}
-.btn-p:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
-.btn-g{background:transparent;color:var(–g500);border:1px solid var(–g200);}
-.btn-g:hover{background:var(–g50);color:var(–g700);}
-.btn-o{background:var(–orange);color:var(–white);}
-.btn-o:hover{background:var(–orange2);}
-.bsm{padding:6px 12px;font-size:11px;font-weight:600;border-radius:var(–r);border:1px solid var(–g200);background:var(–white);color:var(–g700);cursor:pointer;transition:all var(–t);font-family:var(–f);}
-.bsm:hover{border-color:var(–blue);color:var(–blue);}
+.brand-sub {
+font-size: 10px;
+color: rgba(255,255,255,.4);
+letter-spacing: 0.5px;
+text-transform: uppercase;
+padding-left: 40px;
+}
 
-/* PANEL */
-.panel{display:none;}
-.panel.active{display:block;animation:fu .3s ease both;}
-@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.nav-section-label {
+font-size: 9px;
+font-weight: 600;
+letter-spacing: 1.2px;
+text-transform: uppercase;
+color: rgba(255,255,255,.3);
+padding: 20px 18px 7px;
+}
 
-/* ANALYSIS */
-.awrap{display:flex;flex-direction:column;align-items:center;padding:56px 24px;text-align:center;}
-.spin{width:38px;height:38px;border:3px solid var(–g200);border-top-color:var(–blue);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:18px;}
-@keyframes sp{to{transform:rotate(360deg)}}
-.at{font-size:17px;font-weight:700;margin-bottom:3px;}
-.as{font-size:13px;color:var(–g500);margin-bottom:32px;}
-.asteps{width:100%;max-width:400px;text-align:left;}
-.astep{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid var(–g100);opacity:.3;transition:opacity .4s;}
-.astep:last-child{border-bottom:none;}
-.astep.active{opacity:1;}
-.astep.done{opacity:.6;}
-.adot{width:7px;height:7px;border-radius:50%;background:var(–g300);margin-top:5px;flex-shrink:0;transition:background .3s;}
-.astep.active .adot{background:var(–orange);box-shadow:0 0 5px rgba(245,130,32,.5);animation:pulse 1s ease infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.astep.done .adot{background:var(–blue);animation:none;}
-.am{font-size:13px;font-weight:500;color:var(–g700);}
-.asb{font-size:11px;color:var(–g300);}
+.nav-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 9px 18px;
+cursor: pointer;
+border-radius: 0;
+transition: background 0.15s;
+border-left: 2px solid transparent;
+margin: 1px 0;
+}
 
-/* MODEL CARD */
-.mc-hdr{background:var(–blue);padding:22px 26px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;}
-@media(max-width:480px){.mc-hdr{flex-direction:column;}}
-.mc-fam{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px;}
-.mc-nm{font-size:20px;font-weight:700;color:var(–white);letter-spacing:-.3px;line-height:1.2;margin-bottom:3px;}
-.mc-id{font-size:10px;color:rgba(255,255,255,.3);font-family:monospace;}
-.cring{width:56px;height:56px;border-radius:50%;border:2px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:4px;flex-shrink:0;}
-.clv{font-size:15px;font-weight:800;}
-.clx{font-size:7px;letter-spacing:.5px;opacity:.6;}
-.cnm{font-size:9px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.5px;text-align:center;}
-.N1{color:#ff6b6b;border-color:#ff6b6b;}
-.N2{color:#ffa554;border-color:#ffa554;}
-.N3{color:#ffd166;border-color:#ffd166;}
-.N4{color:#6bcb8b;border-color:#6bcb8b;}
-.N5{color:rgba(255,255,255,.45);border-color:rgba(255,255,255,.3);}
+.nav-item:hover { background: rgba(255,255,255,.07); }
 
-.mcs{padding:16px 26px;border-bottom:1px solid var(–g100);}
-.mcs:last-child{border-bottom:none;}
-.mcs-lbl{font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(–g300);margin-bottom:10px;display:flex;align-items:center;gap:7px;}
-.mcs-lbl::after{content:’’;flex:1;height:1px;background:var(–g100);}
+.nav-item.active {
+background: rgba(255,255,255,.12);
+border-left-color: var(–orange);
+}
 
-.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-@media(max-width:480px){.mg{grid-template-columns:1fr;}}
-.mc{background:var(–g50);border:1px solid var(–g100);border-radius:var(–r);padding:9px 11px;}
-.mcl{font-size:10px;color:var(–g300);margin-bottom:2px;font-weight:500;}
-.mcv{font-size:12px;color:var(–g900);font-weight:500;line-height:1.4;}
-.mcd{font-size:13px;color:var(–g700);line-height:1.7;}
+.nav-icon { font-size: 15px; flex-shrink: 0; opacity: 0.75; }
+.nav-item.active .nav-icon { opacity: 1; }
 
-.srows{display:flex;flex-direction:column;gap:7px;}
-.srow{display:flex;align-items:center;gap:9px;}
-.sdim{font-size:11px;color:var(–g500);width:170px;flex-shrink:0;}
-.strk{flex:1;height:4px;background:var(–g100);border-radius:2px;overflow:hidden;}
-.sfil{height:100%;background:var(–blue);border-radius:2px;transition:width 1s cubic-bezier(.4,0,.2,1);}
-.sval{font-size:11px;color:var(–g500);width:26px;text-align:right;font-family:monospace;flex-shrink:0;}
-.conf-row{display:flex;align-items:center;gap:9px;margin-top:8px;padding:7px 11px;background:var(–g50);border:1px solid var(–g100);border-radius:var(–r);}
-.cl{font-size:11px;color:var(–g300);}
-.cv{font-size:14px;font-weight:700;color:var(–blue);}
-.ctrk{flex:1;height:3px;background:var(–g100);border-radius:2px;overflow:hidden;}
-.cfil{height:100%;background:var(–blue);border-radius:2px;}
+.nav-label {
+font-size: 13px;
+color: rgba(255,255,255,.65);
+font-weight: 400;
+}
 
-.tags{display:flex;flex-wrap:wrap;gap:5px;}
-.tag{background:var(–g100);border-radius:3px;padding:2px 7px;font-size:11px;font-weight:500;color:var(–g700);}
+.nav-item.active .nav-label { color: #fff; font-weight: 500; }
 
-.ctls{display:flex;flex-direction:column;gap:5px;}
-.ctl{display:flex;align-items:flex-start;gap:8px;padding:8px 11px;border-radius:var(–r);font-size:12px;line-height:1.5;border-left:3px solid;}
-.ctl.crit{background:var(–red-bg);color:var(–red);border-color:var(–red);}
-.ctl.warn{background:var(–yel-bg);color:var(–yel);border-color:var(–orange);}
-.ctl.ok  {background:var(–green-bg);color:var(–green);border-color:var(–green);}
-.mcsc{font-size:13px;color:var(–g700);line-height:1.7;}
+.nav-badge {
+margin-left: auto;
+background: var(–orange);
+color: #fff;
+font-size: 10px;
+font-weight: 600;
+padding: 2px 7px;
+border-radius: 10px;
+min-width: 20px;
+text-align: center;
+}
 
-/* MODERATION */
-.mhdr{padding:14px 26px;background:#fffbf5;border-top:3px solid var(–orange);}
-.mt{font-size:13px;font-weight:700;color:var(–g900);margin-bottom:2px;}
-.ms{font-size:12px;color:var(–g500);}
-.mbody{padding:16px 26px;}
-.drow{display:flex;gap:8px;}
-.db{flex:1;padding:9px;border-radius:var(–r);border:1.5px solid var(–g200);background:var(–white);font-family:var(–f);font-size:13px;font-weight:500;cursor:pointer;transition:all var(–t);display:flex;align-items:center;justify-content:center;gap:5px;color:var(–g700);}
-.db.approve:hover,.db.approve.sel{border-color:var(–green);background:var(–green-bg);color:var(–green);}
-.db.reject:hover,.db.reject.sel{border-color:var(–orange);background:#fff7ef;color:var(–orange2);}
+.sidebar-footer {
+margin-top: auto;
+padding: 14px 18px;
+border-top: 1px solid rgba(255,255,255,.08);
+font-size: 11px;
+color: rgba(255,255,255,.25);
+font-family: var(–mono);
+}
 
-.expbar{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(–g50);border-top:1px solid var(–g100);}
-.explbl{font-size:10px;color:var(–g300);font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
-.expbtns{display:flex;gap:5px;}
-.mcft{padding:9px 18px;text-align:right;font-size:10px;color:var(–g300);font-family:monospace;border-top:1px solid var(–g100);}
+/* ── MAIN AREA ── */
+.main-area {
+flex: 1;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
 
-/* MSG PANEL */
-.mp-hdr{background:var(–blue);padding:18px 24px;display:flex;align-items:center;gap:11px;}
-.mp-ico{font-size:20px;}
-.mp-t{font-size:15px;font-weight:700;color:var(–white);}
-.mp-s{font-size:11px;color:rgba(255,255,255,.45);}
-.mtabs{display:flex;border-bottom:1px solid var(–g200);background:var(–white);}
-.mtab{padding:11px 18px;font-size:12px;font-weight:600;color:var(–g300);cursor:pointer;border-bottom:2px solid transparent;transition:all var(–t);display:flex;align-items:center;gap:6px;}
-.mtab.active{color:var(–blue);border-bottom-color:var(–blue);}
-.mbadge{background:var(–orange);color:var(–white);border-radius:10px;padding:1px 5px;font-size:9px;font-weight:700;}
+/* ── TOPBAR ── */
+.topbar {
+height: var(–head-h);
+background: var(–white);
+border-bottom: 1px solid var(–g100);
+display: flex;
+align-items: center;
+padding: 0 32px;
+gap: 20px;
+flex-shrink: 0;
+box-shadow: var(–sh-s);
+}
 
-.msg-body-wrap{padding:18px 22px;}
-.mcard{background:var(–g50);border:1px solid var(–g200);border-radius:var(–rl);overflow:hidden;margin-bottom:10px;}
-.menv{display:flex;align-items:center;gap:9px;padding:11px 14px;background:var(–white);border-bottom:1px solid var(–g100);}
-.menv-ico{font-size:14px;flex-shrink:0;}
-.menv-lbl{font-size:9px;font-weight:600;color:var(–g300);letter-spacing:.8px;text-transform:uppercase;}
-.menv-to{font-size:12px;font-weight:600;color:var(–g700);}
-.mcont{padding:13px 14px;}
-.msubj{font-size:13px;font-weight:700;color:var(–g900);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(–g100);}
-.mbtext{font-size:12px;color:var(–g700);line-height:1.8;white-space:pre-wrap;}
-.macts{padding:12px 22px;border-top:1px solid var(–g100);display:flex;gap:7px;}
+.topbar-title {
+font-size: 16px;
+font-weight: 600;
+color: var(–g900);
+letter-spacing: -0.2px;
+flex: 1;
+}
 
-/* SUMMARY */
-.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.sum-foot{padding:14px 22px;border-top:1px solid var(–g100);display:flex;gap:7px;flex-wrap:wrap;}
+.topbar-subtitle {
+font-size: 12px;
+color: var(–g500);
+margin-top: 1px;
+}
+
+.topbar-right {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.topbar-env {
+display: flex;
+align-items: center;
+gap: 6px;
+background: var(–blue-l);
+border: 1px solid rgba(0,92,169,.15);
+border-radius: 20px;
+padding: 5px 12px;
+font-size: 12px;
+color: var(–blue);
+font-weight: 500;
+}
+
+.topbar-env-dot {
+width: 6px; height: 6px;
+border-radius: 50%;
+background: var(–green);
+}
+
+.topbar-user {
+width: 32px; height: 32px;
+border-radius: 50%;
+background: var(–blue);
+display: flex; align-items: center; justify-content: center;
+font-size: 13px; font-weight: 600; color: #fff;
+cursor: pointer;
+}
+
+/* ── CONTENT ── */
+.content {
+flex: 1;
+overflow-y: auto;
+padding: 32px;
+}
+
+/* ═══════════════════════════════════════════════
+PAGES
+═══════════════════════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; animation: fadeUp .3s ease both; }
+
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(10px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════
+SHARED COMPONENTS
+═══════════════════════════════════════════════ */
+
+/* Page header */
+.ph { margin-bottom: 28px; }
+.ph-eyebrow {
+font-size: 11px; font-weight: 600;
+text-transform: uppercase; letter-spacing: 1px;
+color: var(–blue); margin-bottom: 4px;
+}
+.ph-title {
+font-family: var(–serif);
+font-size: 28px;
+color: var(–g900);
+letter-spacing: -0.5px;
+line-height: 1.15;
+margin-bottom: 6px;
+}
+.ph-desc { font-size: 14px; color: var(–g500); line-height: 1.6; max-width: 600px; }
+
+/* Cards */
+.card {
+background: var(–white);
+border: 1px solid var(–g100);
+border-radius: var(–r-l);
+box-shadow: var(–sh-s);
+}
+
+.card-pad { padding: 24px; }
+
+.card-title {
+font-size: 11px; font-weight: 600;
+text-transform: uppercase; letter-spacing: 0.8px;
+color: var(–g300);
+margin-bottom: 14px;
+padding-bottom: 10px;
+border-bottom: 1px solid var(–g100);
+}
+
+/* Grid */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+
+/* Form elements */
+.field { margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.frow:last-child { margin-bottom: 0; }
+.frow3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+label {
+display: block;
+font-size: 12px; font-weight: 500;
+color: var(–g500);
+margin-bottom: 6px;
+}
+
+label .req { color: var(–orange); margin-left: 2px; }
+
+input[type=text], input[type=url], input[type=password],
+input[type=email], textarea, select {
+width: 100%;
+border: 1px solid var(–g200);
+border-radius: var(–r-s);
+padding: 9px 13px;
+font-family: var(–font);
+font-size: 13px;
+color: var(–g900);
+background: var(–white);
+outline: none;
+transition: border-color .15s, box-shadow .15s;
+-webkit-appearance: none;
+}
+
+input:focus, textarea:focus, select:focus {
+border-color: var(–blue);
+box-shadow: 0 0 0 3px rgba(0,92,169,.1);
+}
+
+textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+/* Buttons */
+.btn {
+display: inline-flex; align-items: center; justify-content: center;
+gap: 7px; padding: 10px 22px;
+border: none; border-radius: var(–r-s);
+font-family: var(–font); font-size: 13px; font-weight: 600;
+cursor: pointer; transition: all .15s; letter-spacing: 0.1px;
+}
+
+.btn-primary { background: var(–blue); color: #fff; }
+.btn-primary:hover { background: var(–blue-d); box-shadow: 0 4px 12px rgba(0,92,169,.25); }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+
+.btn-secondary {
+background: var(–white); color: var(–g700);
+border: 1px solid var(–g200);
+}
+.btn-secondary:hover { border-color: var(–g300); color: var(–g900); }
+
+.btn-orange { background: var(–orange); color: #fff; }
+.btn-orange:hover { background: #D96910; }
+
+.btn-ghost {
+background: transparent; color: var(–g500);
+border: 1px solid transparent;
+}
+.btn-ghost:hover { background: var(–g100); color: var(–g700); }
+
+.btn-sm { padding: 7px 14px; font-size: 12px; }
+
+.btn-row {
+display: flex; align-items: center;
+justify-content: space-between;
+margin-top: 24px; gap: 10px;
+}
+
+/* Notice */
+.notice {
+display: flex; gap: 10px;
+padding: 12px 14px;
+border-radius: var(–r-s);
+border: 1px solid;
+font-size: 13px; line-height: 1.55;
+margin-bottom: 20px;
+}
+.notice.info  { background: var(–blue-l);  border-color: rgba(0,92,169,.2);  color: var(–blue-d); }
+.notice.ok    { background: var(–green-l); border-color: rgba(27,127,79,.2); color: var(–green); }
+.notice.warn  { background: var(–amber-l); border-color: rgba(154,98,0,.2);  color: var(–amber); }
+.notice.tip   { background: var(–teal-l);  border-color: rgba(13,115,119,.2);color: var(–teal); }
+.n-ico { flex-shrink:0; font-size:15px; margin-top:1px; }
+
+/* Badges */
+.badge {
+display: inline-flex; align-items: center;
+padding: 3px 9px;
+border-radius: 20px;
+font-size: 11px; font-weight: 600;
+letter-spacing: 0.2px;
+}
+.badge-N1 { background: var(–red-l);   color: var(–red);   border: 1px solid rgba(184,50,50,.2); }
+.badge-N2 { background: var(–orange-l);color: var(–orange);border: 1px solid rgba(244,121,32,.2); }
+.badge-N3 { background: var(–amber-l); color: var(–amber); border: 1px solid rgba(154,98,0,.2); }
+.badge-N4 { background: var(–green-l); color: var(–green); border: 1px solid rgba(27,127,79,.2); }
+.badge-N5 { background: var(–g100);    color: var(–g500);  border: 1px solid var(–g200); }
+
+/* Stat cards */
+.stat-card {
+background: var(–white);
+border: 1px solid var(–g100);
+border-radius: var(–r-l);
+padding: 20px 22px;
+box-shadow: var(–sh-s);
+}
+.stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; color: var(–g300); margin-bottom: 8px; }
+.stat-value { font-family: var(–serif); font-size: 36px; color: var(–g900); letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
+.stat-delta { font-size: 12px; color: var(–g500); }
+.stat-delta.up { color: var(–green); }
+
+/* Tags */
+.tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag {
+background: var(–g100);
+border-radius: 20px;
+padding: 3px 10px;
+font-size: 11px; color: var(–g500);
+font-family: var(–mono);
+}
+
+/* Steps wizard */
+.wizard-steps {
+display: flex;
+gap: 0;
+margin-bottom: 28px;
+border-bottom: 1px solid var(–g100);
+}
+.wstep {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 14px 8px 12px;
+gap: 5px;
+position: relative;
+cursor: default;
+}
+.wstep::after {
+content: ‘’;
+position: absolute;
+bottom: -1px; left: 0; right: 0;
+height: 2px;
+background: transparent;
+transition: background .3s;
+}
+.wstep.active::after { background: var(–blue); }
+.wstep.done::after   { background: var(–green); }
+
+.ws-num {
+width: 22px; height: 22px;
+border-radius: 50%;
+border: 1.5px solid var(–g200);
+display: flex; align-items: center; justify-content: center;
+font-size: 10px; font-weight: 600;
+color: var(–g300); background: var(–white);
+transition: all .3s;
+}
+.wstep.active .ws-num { border-color: var(–blue); color: var(–blue); }
+.wstep.done .ws-num   { border-color: var(–green); background: var(–green); color: #fff; }
+.ws-lbl { font-size: 11px; color: var(–g300); font-weight: 500; white-space: nowrap; }
+.wstep.active .ws-lbl { color: var(–blue); }
+.wstep.done .ws-lbl   { color: var(–green); }
+
+/* Wizard panels */
+.wpanel { display: none; }
+.wpanel.active { display: block; animation: fadeUp .25s ease both; }
+
+/* Source tiles */
+.src-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.src-tile {
+border: 1px solid var(–g200);
+border-radius: var(–r-s);
+padding: 14px 8px;
+cursor: pointer;
+display: flex; flex-direction: column;
+align-items: center; gap: 7px;
+background: var(–white);
+transition: all .15s;
+user-select: none;
+}
+.src-tile:hover  { border-color: var(–blue); background: var(–blue-l); }
+.src-tile.sel    { border-color: var(–blue); background: var(–blue-l); }
+.src-ico  { font-size: 22px; line-height: 1; }
+.src-lbl  { font-size: 11px; font-weight: 500; color: var(–g500); text-align: center; line-height: 1.3; }
+.src-tile.sel .src-lbl { color: var(–blue); }
+
+/* Upload */
+.upz {
+border: 1.5px dashed var(–g200);
+border-radius: var(–r-m);
+padding: 28px 20px;
+text-align: center;
+cursor: pointer;
+position: relative;
+background: var(–off);
+transition: all .15s;
+}
+.upz:hover { border-color: var(–blue); background: var(–blue-l); }
+.upz input[type=file] { position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%; }
+.upz-icon { font-size: 28px; margin-bottom: 8px; }
+.upz-t { font-size: 13px; color: var(–g500); margin-bottom: 3px; }
+.upz-h { font-size: 11px; color: var(–g300); font-family: var(–mono); }
+
+.flist { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.fi {
+display: flex; align-items: center; gap: 10px;
+background: var(–off); border: 1px solid var(–g100);
+border-radius: var(–r-s); padding: 8px 12px;
+}
+.fi-ico { font-size: 15px; flex-shrink: 0; }
+.fi-nm  { flex: 1; font-family: var(–mono); font-size: 11px; color: var(–g500); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fi-sz  { font-family: var(–mono); font-size: 11px; color: var(–g300); flex-shrink: 0; }
+.fi-rm  { background: none; border: none; color: var(–g300); cursor: pointer; font-size: 16px; line-height: 1; transition: color .15s; }
+.fi-rm:hover { color: var(–red); }
+
+/* Link chips */
+.lrow { display: flex; gap: 8px; margin-bottom: 8px; }
+.lrow input { flex: 1; }
+.btn-al {
+background: var(–off); border: 1px solid var(–g200);
+border-radius: var(–r-s); padding: 0 14px;
+color: var(–g500); font-size: 13px; font-weight: 500;
+cursor: pointer; white-space: nowrap; transition: all .15s;
+font-family: var(–font);
+}
+.btn-al:hover { border-color: var(–blue); color: var(–blue); background: var(–blue-l); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+display: flex; align-items: center; gap: 5px;
+background: var(–blue-l); border: 1px solid rgba(0,92,169,.2);
+border-radius: 20px; padding: 3px 10px 3px 12px;
+font-family: var(–mono); font-size: 11px; color: var(–blue);
+}
+.chip-t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px; }
+.chip-r { background: none; border: none; color: rgba(0,92,169,.4); cursor: pointer; font-size: 14px; line-height: 1; transition: color .15s; }
+.chip-r:hover { color: var(–red); }
+
+/* Analysis animation */
+.analysis-wrap {
+text-align: center;
+padding: 60px 0;
+}
+.spinner {
+width: 40px; height: 40px;
+border: 3px solid var(–g100);
+border-top-color: var(–blue);
+border-radius: 50%;
+margin: 0 auto 24px;
+animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.analysis-wrap h3 { font-family: var(–serif); font-size: 22px; color: var(–g900); margin-bottom: 5px; }
+.analysis-wrap p  { font-size: 13px; color: var(–g500); margin-bottom: 32px; }
+.asteps { max-width: 420px; margin: 0 auto; text-align: left; }
+.as { display: flex; align-items: flex-start; gap: 13px; padding: 11px 0; border-bottom: 1px solid var(–g100); opacity: .3; transition: opacity .3s; }
+.as:last-child { border-bottom: none; }
+.as.active { opacity: 1; } .as.done { opacity: .6; }
+.as-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; background: var(–g300); flex-shrink: 0; transition: background .3s; }
+.as.active .as-dot { background: var(–blue); box-shadow: 0 0 0 3px rgba(0,92,169,.15); }
+.as.done   .as-dot { background: var(–green); }
+.as-l { font-size: 13px; font-weight: 500; color: var(–g900); }
+.as-s { font-size: 12px; color: var(–g300); margin-top: 2px; }
+
+/* Key/eye */
+.key-row { display: flex; gap: 8px; }
+.key-row input { flex: 1; font-family: var(–mono); font-size: 12px; }
+.btn-eye { background: var(–off); border: 1px solid var(–g200); border-radius: var(–r-s); padding: 0 12px; cursor: pointer; color: var(–g300); font-size: 14px; transition: all .15s; }
+.btn-eye:hover { color: var(–g700); }
+
+/* ═══════════════════════════════════════════════
+MODEL CARD — APPLE EXECUTIVE STYLE
+═══════════════════════════════════════════════ */
+.mc-wrap {
+background: var(–white);
+border: 1px solid var(–g100);
+border-radius: var(–r-xl);
+box-shadow: var(–sh-l);
+overflow: hidden;
+margin-bottom: 24px;
+}
+
+.mc-hero {
+padding: 36px 40px 32px;
+background: linear-gradient(135deg, var(–blue-d) 0%, var(–blue-m) 100%);
+position: relative;
+overflow: hidden;
+}
+
+.mc-hero::before {
+content: ‘’;
+position: absolute;
+top: -60px; right: -60px;
+width: 260px; height: 260px;
+border-radius: 50%;
+background: rgba(255,255,255,.04);
+pointer-events: none;
+}
+
+.mc-hero::after {
+content: ‘’;
+position: absolute;
+bottom: -40px; left: 30%;
+width: 180px; height: 180px;
+border-radius: 50%;
+background: rgba(255,255,255,.03);
+pointer-events: none;
+}
+
+.mc-hero-top {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 24px;
+margin-bottom: 20px;
+position: relative; z-index: 1;
+}
+
+.mc-uid {
+display: inline-flex; align-items: center; gap: 8px;
+background: rgba(255,255,255,.1);
+border: 1px solid rgba(255,255,255,.15);
+border-radius: 20px;
+padding: 4px 12px;
+font-family: var(–mono);
+font-size: 11px;
+color: rgba(255,255,255,.7);
+letter-spacing: 0.5px;
+margin-bottom: 10px;
+}
+
+.mc-uid-dot { width: 6px; height: 6px; border-radius: 50%; background: var(–orange); }
+
+.mc-hero-name {
+font-family: var(–serif);
+font-size: 30px;
+color: #fff;
+letter-spacing: -0.5px;
+line-height: 1.15;
+margin-bottom: 4px;
+}
+
+.mc-hero-family {
+font-size: 13px;
+color: rgba(255,255,255,.55);
+font-weight: 300;
+}
+
+.mc-crit-block {
+flex-shrink: 0;
+text-align: center;
+}
+
+.mc-crit-ring {
+width: 72px; height: 72px;
+border-radius: 50%;
+border: 2.5px solid rgba(255,255,255,.25);
+background: rgba(255,255,255,.08);
+display: flex; flex-direction: column;
+align-items: center; justify-content: center;
+margin: 0 auto 6px;
+}
+
+.mc-crit-n    { font-family: var(–serif); font-size: 20px; color: #fff; line-height: 1; }
+.mc-crit-lbl  { font-size: 8px; color: rgba(255,255,255,.4); letter-spacing: 0.5px; text-transform: uppercase; }
+.mc-crit-name { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.65); letter-spacing: 0.3px; }
+
+.cN1 .mc-crit-ring { border-color: #FF9393; background: rgba(255,80,80,.15); }
+.cN2 .mc-crit-ring { border-color: #FFBF82; background: rgba(244,121,32,.15); }
+.cN3 .mc-crit-ring { border-color: #FFE08C; background: rgba(255,190,0,.12); }
+.cN4 .mc-crit-ring { border-color: #7EE8B4; background: rgba(27,127,79,.15); }
+
+.mc-hero-meta {
+display: flex;
+gap: 28px;
+position: relative; z-index: 1;
+}
+
+.mc-meta-item { }
+.mc-meta-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,.35); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.mc-meta-value { font-size: 13px; color: rgba(255,255,255,.8); font-weight: 400; }
+
+.mc-body { padding: 32px 40px; }
+
+.mc-section { margin-bottom: 28px; }
+.mc-section:last-child { margin-bottom: 0; }
+
+.mc-sec-header {
+display: flex; align-items: center; gap: 10px;
+margin-bottom: 14px;
+}
+
+.mc-sec-title {
+font-size: 11px; font-weight: 600;
+text-transform: uppercase; letter-spacing: 0.9px;
+color: var(–g300);
+}
+
+.mc-sec-line { flex: 1; height: 1px; background: var(–g100); }
+
+.mc-desc-text { font-size: 14px; color: var(–g500); line-height: 1.75; }
+
+/* Info cells */
+.ic-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+.ic {
+background: var(–off);
+border: 1px solid var(–g100);
+border-radius: var(–r-m);
+padding: 12px 14px;
+}
+.ic-l { font-size: 10px; font-weight: 500; color: var(–g300); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+.ic-v { font-size: 13px; color: var(–g900); line-height: 1.4; font-weight: 400; }
+
+/* Score bars */
+.score-rows { display: flex; flex-direction: column; gap: 10px; }
+.score-row  { display: flex; align-items: center; gap: 12px; }
+.sc-dim { font-size: 12px; color: var(–g500); font-family: var(–mono); width: 180px; flex-shrink: 0; }
+.sc-track { flex: 1; height: 6px; background: var(–g100); border-radius: 3px; overflow: hidden; }
+.sc-fill  { height: 100%; border-radius: 3px; background: var(–blue); transition: width 1.3s cubic-bezier(.4,0,.2,1); }
+.sc-val   { font-family: var(–mono); font-size: 12px; color: var(–g300); width: 30px; text-align: right; flex-shrink: 0; }
+
+.score-total {
+display: flex; align-items: center; justify-content: space-between;
+margin-top: 14px; padding: 12px 16px;
+background: var(–blue-l);
+border: 1px solid rgba(0,92,169,.15);
+border-radius: var(–r-s);
+}
+.st-l { font-size: 13px; font-weight: 600; color: var(–blue); }
+.st-v { font-family: var(–serif); font-size: 22px; color: var(–blue); }
+
+.conf-row {
+display: flex; align-items: center; gap: 12px;
+margin-top: 10px; padding: 10px 14px;
+background: var(–off); border: 1px solid var(–g100);
+border-radius: var(–r-s);
+}
+.conf-l  { font-size: 11px; color: var(–g300); flex-shrink: 0; }
+.conf-v  { font-family: var(–mono); font-size: 14px; font-weight: 500; color: var(–green); flex-shrink: 0; }
+.conf-bar { flex: 1; height: 4px; background: var(–g100); border-radius: 2px; overflow: hidden; }
+.conf-fill { height: 100%; background: var(–green); border-radius: 2px; }
+.conf-note { font-size: 11px; color: var(–g300); margin-top: 5px; line-height: 1.5; }
+
+/* Controls */
+.ctrl-list { display: flex; flex-direction: column; gap: 7px; }
+.ctrl-item {
+display: flex; align-items: flex-start; gap: 10px;
+padding: 10px 14px;
+border-radius: var(–r-s);
+border-left: 3px solid;
+font-size: 13px; color: var(–g700); line-height: 1.55;
+}
+.ctrl-item.crit  { background: var(–red-l);   border-color: var(–red); }
+.ctrl-item.warn  { background: var(–amber-l);  border-color: var(–amber); }
+.ctrl-item.ok    { background: var(–green-l);  border-color: var(–green); }
+
+/* Export bar */
+.mc-footer {
+display: flex; align-items: center; justify-content: space-between;
+padding: 14px 40px;
+background: var(–off);
+border-top: 1px solid var(–g100);
+}
+.mc-footer-left  { font-family: var(–mono); font-size: 10px; color: var(–g300); }
+.mc-footer-right { display: flex; gap: 8px; }
+.btn-exp {
+background: var(–white); border: 1px solid var(–g200);
+border-radius: var(–r-s); padding: 6px 13px;
+font-family: var(–mono); font-size: 11px; color: var(–g500);
+cursor: pointer; transition: all .15s;
+}
+.btn-exp:hover { border-color: var(–blue); color: var(–blue); }
+
+/* Messaging */
+.msg-tabs { display: flex; gap: 0; border-bottom: 1px solid var(–g100); margin-bottom: 18px; }
+.mtab {
+padding: 10px 18px; font-size: 12px; font-weight: 500;
+color: var(–g300); cursor: pointer;
+border-bottom: 2px solid transparent;
+transition: all .15s; margin-bottom: -1px;
+}
+.mtab.active { color: var(–blue); border-bottom-color: var(–blue); }
+.mtab:hover  { color: var(–g700); }
+.mcontent { display: none; } .mcontent.active { display: block; animation: fadeUp .2s ease both; }
+.mprev { background: var(–off); border: 1px solid var(–g100); border-radius: var(–r-m); overflow: hidden; }
+.mprev-bar { background: var(–white); border-bottom: 1px solid var(–g100); padding: 9px 14px; display: flex; align-items: center; gap: 6px; }
+.mpd { width: 8px; height: 8px; border-radius: 50%; }
+.mpd1{background:#FF5F56;}.mpd2{background:#FFBD2E;}.mpd3{background:#27C93F;}
+.mto   { font-size: 11px; color: var(–g300); padding: 9px 15px 0; }
+.msubj { font-size: 13px; font-weight: 600; color: var(–g900); padding: 4px 15px 9px; border-bottom: 1px solid var(–g100); }
+.mbody { padding: 14px 15px; font-size: 12px; color: var(–g700); line-height: 1.8; white-space: pre-wrap; font-family: var(–mono); }
+.mrec { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.mrec-l { font-size: 12px; color: var(–g300); flex-shrink: 0; }
+.mrec input { flex: 1; }
+
+/* Moderation */
+.modsec { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(–g100); }
+.modsec-title { font-family: var(–serif); font-size: 20px; color: var(–g900); margin-bottom: 5px; }
+.modsec-sub   { font-size: 13px; color: var(–g500); margin-bottom: 22px; line-height: 1.55; }
+.dec-btns { display: flex; gap: 10px; }
+.dec-btn {
+flex: 1; padding: 11px; border-radius: var(–r-s);
+border: 1px solid var(–g200); background: var(–white);
+font-family: var(–font); font-size: 13px; font-weight: 500;
+cursor: pointer; transition: all .15s;
+display: flex; align-items: center; justify-content: center; gap: 7px;
+color: var(–g500);
+}
+.dec-btn.approve:hover,.dec-btn.approve.sel { border-color: var(–green); background: var(–green-l); color: var(–green); }
+.dec-btn.reject:hover,.dec-btn.reject.sel   { border-color: var(–amber); background: var(–amber-l); color: var(–amber); }
+
+/* Success banner */
+.sbanner {
+display: none; align-items: center; gap: 12px;
+padding: 14px 18px;
+background: var(–green-l); border: 1px solid rgba(27,127,79,.25);
+border-radius: var(–r-s); margin-bottom: 16px;
+}
+.sbanner.show { display: flex; animation: fadeUp .3s ease both; }
+.sb-ico { font-size: 18px; flex-shrink: 0; }
+.sb-txt { font-size: 13px; color: var(–green); line-height: 1.5; }
+.sb-txt strong { font-weight: 600; }
+
+/* ═══════════════════════════════════════════════
+PAGE: VALIDATION (área de validação)
+═══════════════════════════════════════════════ */
+.val-filters {
+display: flex; align-items: center; gap: 10px;
+margin-bottom: 20px; flex-wrap: wrap;
+}
+.filter-btn {
+padding: 6px 14px; border-radius: 20px;
+border: 1px solid var(–g200);
+font-size: 12px; font-weight: 500; color: var(–g500);
+background: var(–white); cursor: pointer; transition: all .15s;
+}
+.filter-btn:hover { border-color: var(–blue); color: var(–blue); }
+.filter-btn.active { background: var(–blue); border-color: var(–blue); color: #fff; }
+
+.model-table { width: 100%; border-collapse: collapse; }
+.model-table th {
+text-align: left; padding: 10px 14px;
+font-size: 11px; font-weight: 600;
+text-transform: uppercase; letter-spacing: 0.6px;
+color: var(–g300);
+border-bottom: 1px solid var(–g100);
+background: var(–off);
+}
+.model-table td {
+padding: 12px 14px;
+font-size: 13px; color: var(–g700);
+border-bottom: 1px solid var(–g100);
+}
+.model-table tr:hover td { background: var(–off); }
+.model-table tr:last-child td { border-bottom: none; }
+
+.td-model-name { font-weight: 500; color: var(–g900); }
+.td-link { color: var(–blue); cursor: pointer; text-decoration: none; font-size: 12px; }
+.td-link:hover { text-decoration: underline; }
+
+/* Validation detail modal */
+.modal-overlay {
+position: fixed; inset: 0;
+background: rgba(0,0,0,.45);
+z-index: 1000;
+display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+background: var(–white);
+border-radius: var(–r-xl);
+box-shadow: var(–sh-l);
+width: 720px; max-width: 95vw;
+max-height: 90vh;
+overflow-y: auto;
+padding: 32px;
+animation: slideUp .25s ease;
+}
+@keyframes slideUp { from { transform: translateY(20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+.modal-title { font-family: var(–serif); font-size: 22px; margin-bottom: 4px; }
+.modal-sub   { font-size: 13px; color: var(–g500); margin-bottom: 22px; }
+.modal-close {
+position: absolute; top: 20px; right: 24px;
+background: none; border: none;
+font-size: 20px; color: var(–g300); cursor: pointer;
+transition: color .15s;
+}
+.modal-close:hover { color: var(–g900); }
+.modal-header { display: flex; justify-content: space-between; align-items: flex-start; position: relative; }
+
+/* Other units */
+.unit-comment {
+background: var(–off); border: 1px solid var(–g100);
+border-radius: var(–r-m); padding: 14px 16px;
+margin-bottom: 12px;
+}
+.uc-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.uc-avatar {
+width: 28px; height: 28px; border-radius: 50%;
+background: var(–blue); display: flex; align-items: center;
+justify-content: center; font-size: 11px; font-weight: 600; color: #fff;
+flex-shrink: 0;
+}
+.uc-name  { font-size: 13px; font-weight: 500; color: var(–g900); }
+.uc-time  { font-size: 11px; color: var(–g300); margin-left: auto; font-family: var(–mono); }
+.uc-text  { font-size: 13px; color: var(–g700); line-height: 1.6; }
+
+/* ═══════════════════════════════════════════════
+PAGE: BI DASHBOARD
+═══════════════════════════════════════════════ */
+.bi-kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+
+.kpi-card {
+background: var(–white);
+border: 1px solid var(–g100);
+border-radius: var(–r-l);
+padding: 20px 22px;
+box-shadow: var(–sh-s);
+position: relative;
+overflow: hidden;
+}
+.kpi-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+}
+.kpi-card.kpi-blue::before   { background: var(–blue); }
+.kpi-card.kpi-orange::before { background: var(–orange); }
+.kpi-card.kpi-green::before  { background: var(–green); }
+.kpi-card.kpi-red::before    { background: var(–red); }
+
+.kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; color: var(–g300); margin-bottom: 10px; }
+.kpi-value { font-family: var(–serif); font-size: 38px; color: var(–g900); letter-spacing: -1.5px; line-height: 1; margin-bottom: 6px; }
+.kpi-sub   { font-size: 12px; color: var(–g500); }
+
+.bi-chart-wrap {
+background: var(–white);
+border: 1px solid var(–g100);
+border-radius: var(–r-l);
+padding: 24px;
+box-shadow: var(–sh-s);
+margin-bottom: 16px;
+}
+.bi-chart-title { font-size: 13px; font-weight: 600; color: var(–g900); margin-bottom: 18px; }
+
+/* Bar chart */
+.bar-chart { display: flex; flex-direction: column; gap: 10px; }
+.bar-row    { display: flex; align-items: center; gap: 12px; }
+.bar-label  { font-size: 12px; color: var(–g500); width: 130px; flex-shrink: 0; text-align: right; }
+.bar-track  { flex: 1; height: 22px; background: var(–off); border-radius: 4px; overflow: hidden; position: relative; }
+.bar-fill   { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 10px; font-size: 11px; font-weight: 600; color: #fff; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+.bar-val    { font-family: var(–mono); font-size: 12px; color: var(–g500); width: 30px; flex-shrink: 0; }
+
+/* Donut chart (CSS) */
+.donut-wrap {
+display: flex; align-items: center; gap: 28px;
+}
+.donut { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+.donut svg { transform: rotate(-90deg); }
+.donut-center {
+position: absolute; inset: 0;
+display: flex; flex-direction: column;
+align-items: center; justify-content: center;
+text-align: center;
+}
+.donut-center-v { font-family: var(–serif); font-size: 26px; color: var(–g900); line-height: 1; }
+.donut-center-l { font-size: 10px; color: var(–g300); text-transform: uppercase; letter-spacing: 0.5px; }
+.donut-legend { display: flex; flex-direction: column; gap: 10px; }
+.dl-item { display: flex; align-items: center; gap: 8px; }
+.dl-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dl-name { font-size: 12px; color: var(–g700); }
+.dl-val  { font-size: 12px; color: var(–g300); font-family: var(–mono); margin-left: auto; }
+
+.bi-table-wrap {
+background: var(–white);
+border: 1px solid var(–g100);
+border-radius: var(–r-l);
+overflow: hidden;
+box-shadow: var(–sh-s);
+}
+.bi-table-header {
+display: flex; align-items: center; justify-content: space-between;
+padding: 16px 20px;
+border-bottom: 1px solid var(–g100);
+}
+.bi-table-title { font-size: 13px; font-weight: 600; color: var(–g900); }
+
+/* ═══════════════════════════════════════════════
+PAGE: SAIBA MAIS
+═══════════════════════════════════════════════ */
+.sm-hero {
+background: linear-gradient(135deg, var(–blue-d), var(–blue-m));
+border-radius: var(–r-xl);
+padding: 40px 44px;
+margin-bottom: 24px;
+color: #fff;
+position: relative;
+overflow: hidden;
+}
+.sm-hero::after {
+content: ‘’;
+position: absolute;
+right: -40px; top: -40px;
+width: 240px; height: 240px;
+border-radius: 50%;
+background: rgba(255,255,255,.04);
+pointer-events: none;
+}
+.sm-hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 8px; }
+.sm-hero-title   { font-family: var(–serif); font-size: 32px; letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.2; }
+.sm-hero-desc    { font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.7; max-width: 520px; }
+
+.sm-steps { display: flex; flex-direction: column; gap: 0; }
+.sm-step {
+display: flex; gap: 24px;
+padding: 28px 0;
+border-bottom: 1px solid var(–g100);
+position: relative;
+}
+.sm-step:last-child { border-bottom: none; }
+
+.sm-step-left {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0;
+flex-shrink: 0;
+width: 56px;
+}
+.sm-step-num {
+width: 40px; height: 40px;
+border-radius: 50%;
+background: var(–blue);
+color: #fff;
+display: flex; align-items: center; justify-content: center;
+font-family: var(–serif);
+font-size: 18px;
+flex-shrink: 0;
+}
+.sm-step-line {
+width: 2px; flex: 1; min-height: 20px;
+background: var(–g100);
+margin-top: 8px;
+}
+.sm-step:last-child .sm-step-line { display: none; }
+
+.sm-step-body { flex: 1; padding-top: 8px; }
+.sm-step-title { font-size: 16px; font-weight: 600; color: var(–g900); margin-bottom: 6px; letter-spacing: -0.2px; }
+.sm-step-desc  { font-size: 13px; color: var(–g500); line-height: 1.75; margin-bottom: 14px; }
+.sm-step-note  {
+display: flex; gap: 8px; align-items: flex-start;
+padding: 10px 13px;
+background: var(–off); border: 1px solid var(–g100);
+border-radius: var(–r-s);
+font-size: 12px; color: var(–g500); line-height: 1.55;
+}
+
+.agent-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.agent-pill {
+display: flex; align-items: center; gap: 6px;
+background: var(–blue-l); border: 1px solid rgba(0,92,169,.15);
+border-radius: 20px; padding: 5px 12px;
+font-size: 12px; color: var(–blue); font-weight: 500;
+}
+
+.sm-faq { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+.faq-item {
+background: var(–white); border: 1px solid var(–g100);
+border-radius: var(–r-m); overflow: hidden;
+}
+.faq-q {
+display: flex; align-items: center; justify-content: space-between;
+padding: 14px 18px; cursor: pointer;
+font-size: 13px; font-weight: 500; color: var(–g900);
+user-select: none;
+}
+.faq-q:hover { background: var(–off); }
+.faq-ico { color: var(–g300); font-size: 16px; transition: transform .2s; }
+.faq-item.open .faq-ico { transform: rotate(45deg); }
+.faq-a {
+display: none;
+padding: 0 18px 14px;
+font-size: 13px; color: var(–g500); line-height: 1.7;
+border-top: 1px solid var(–g100);
+}
+.faq-item.open .faq-a { display: block; padding-top: 12px; }
+
+/* ═══════════════════════════════════════════════
+STORAGE SECTION
+═══════════════════════════════════════════════ */
+.storage-map {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 14px;
+}
+.storage-item {
+background: var(–white); border: 1px solid var(–g100);
+border-radius: var(–r-l); padding: 18px 20px;
+box-shadow: var(–sh-s);
+display: flex; gap: 14px; align-items: flex-start;
+}
+.storage-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+.storage-body {}
+.storage-title { font-size: 13px; font-weight: 600; color: var(–g900); margin-bottom: 4px; }
+.storage-path  { font-family: var(–mono); font-size: 11px; color: var(–blue); background: var(–blue-l); border-radius: 4px; padding: 3px 8px; display: inline-block; margin-bottom: 6px; }
+.storage-desc  { font-size: 12px; color: var(–g500); line-height: 1.6; }
+
+/* ═══════════════════════════════════════════════
+RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 900px) {
+.sidebar { display: none; }
+.ic-grid { grid-template-columns: repeat(2,1fr); }
+.bi-kpi-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 640px) {
+.content { padding: 20px 16px; }
+.topbar  { padding: 0 20px; }
+.grid-2, .frow, .src-grid { grid-template-columns: 1fr; }
+.mc-hero-top { flex-direction: column; }
+.mc-hero, .mc-body { padding: 24px 20px; }
+.mc-footer { flex-direction: column; gap: 10px; padding: 14px 20px; }
+}
 </style>
 
 </head>
 <body>
+<div class="shell">
 
-<header class="hdr">
-  <div class="hdr-inner">
-    <div class="logo-box">
-      <svg viewBox="0 0 22 22" fill="none">
-        <rect width="22" height="22" rx="3" fill="#003087"/>
-        <path d="M16 7.5C14.8 6.6 13.2 6 11.4 6C7.9 6 5 8.7 5 12C5 15.3 7.9 18 11.4 18C13.2 18 14.8 17.4 16 16.5L14.2 14.5C13.5 15.1 12.5 15.5 11.4 15.5C9.4 15.5 7.7 13.9 7.7 12C7.7 10.1 9.4 8.5 11.4 8.5C12.5 8.5 13.5 8.9 14.2 9.5L16 7.5Z" fill="#F58220"/>
-      </svg>
+<!-- ════════════════════ SIDEBAR ════════════════════ -->
+
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-mark">
+      <div class="brand-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="14" height="14" rx="2" stroke="white" stroke-width="1.5" fill="none"/>
+          <path d="M4 8h8M8 4v8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-name">ModelScan</div>
     </div>
-    <div class="brand">
-      <span class="brand-sup">Instituição Financeira</span>
-      <span class="brand-name">Model<b>Scan</b></span>
-    </div>
-    <div class="hdr-div"></div>
-    <div class="hdr-lbl">Catalogação Inteligente de Modelos</div>
-    <div class="hdr-sp"></div>
-    <div class="hdr-env">Validação &amp; Monitoração</div>
-  </div>
-  <div class="prog"><div class="prog-fill" id="pgf"></div></div>
-</header>
-
-<div class="page">
-
-  <!-- STEPS -->
-
-  <div class="steps">
-    <div class="step active" id="stp-1"><div class="sdot">1</div><div><span class="slbl">Identificação</span></div></div>
-    <div class="step" id="stp-2"><div class="sdot">2</div><div><span class="slbl">Fontes</span></div></div>
-    <div class="step" id="stp-3"><div class="sdot">3</div><div><span class="slbl">Análise</span></div></div>
-    <div class="step" id="stp-4"><div class="sdot">4</div><div><span class="slbl">Model Card</span></div></div>
-    <div class="step" id="stp-5"><div class="sdot">5</div><div><span class="slbl">Conclusão</span></div></div>
+    <div class="brand-sub">Gestão de Risco de Modelo</div>
   </div>
 
-  <!-- PANEL 1 -->
+  <div class="nav-section-label">Principal</div>
+  <div class="nav-item active" onclick="showPage('catalog',this)">
+    <span class="nav-icon">📋</span>
+    <span class="nav-label">Nova Catalogação</span>
+  </div>
+  <div class="nav-item" onclick="showPage('validation',this)">
+    <span class="nav-icon">🔍</span>
+    <span class="nav-label">Área de Validação</span>
+    <span class="nav-badge" id="val-badge">3</span>
+  </div>
+  <div class="nav-item" onclick="showPage('bi',this)">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">Painel BI</span>
+  </div>
 
-  <div class="panel active" id="panel-1">
-    <div class="sh"><h2>Identificação do Modelo</h2><p>Dados básicos e autenticação para análise com IA</p></div>
-    <div class="notice info"><div class="ni">🔑</div><div>Informe a chave da API Anthropic para análise real. Deixe em branco para usar o <strong>modo demonstração</strong>.</div></div>
-    <div class="card">
-      <div class="cs">
-        <div class="cs-ttl">Autenticação</div>
-        <div class="f">
-          <label>Chave API Anthropic</label>
-          <div class="krow">
-            <input type="password" id="api-key" placeholder="sk-ant-api03-...">
-            <button class="bico" onclick="toggleKey()">👁</button>
+  <div class="nav-section-label">Apoio</div>
+  <div class="nav-item" onclick="showPage('saibamais',this)">
+    <span class="nav-icon">💡</span>
+    <span class="nav-label">Saiba Mais</span>
+  </div>
+  <div class="nav-item" onclick="showPage('storage',this)">
+    <span class="nav-icon">🗂️</span>
+    <span class="nav-label">Onde ficam os arquivos</span>
+  </div>
+
+  <div class="sidebar-footer">v1.0 · 2025</div>
+</nav>
+
+<!-- ════════════════════ MAIN ════════════════════ -->
+
+<div class="main-area">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Nova Catalogação</div>
+      <div class="topbar-subtitle" id="topbar-sub">Informe as fontes e deixe os agentes fazerem o trabalho</div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-env"><div class="topbar-env-dot"></div>Sistema ativo</div>
+      <div class="topbar-user" title="Usuário">U</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- ════════════ PAGE: CATALOGAÇÃO ════════════ -->
+
+  <div class="page active" id="page-catalog">
+
+```
+<div class="card" style="margin-bottom:20px">
+  <div class="card-pad">
+    <div class="wizard-steps">
+      <div class="wstep active" id="ws1"><div class="ws-num">1</div><div class="ws-lbl">Identificação</div></div>
+      <div class="wstep" id="ws2"><div class="ws-num">2</div><div class="ws-lbl">Fontes</div></div>
+      <div class="wstep" id="ws3"><div class="ws-num">3</div><div class="ws-lbl">Análise</div></div>
+      <div class="wstep" id="ws4"><div class="ws-num">4</div><div class="ws-lbl">Model Card</div></div>
+    </div>
+
+    <!-- WPANEL 1 -->
+    <div class="wpanel active" id="wp1">
+      <div class="notice tip">
+        <div class="n-ico">👋</div>
+        <div><strong>Olá! Que bom ter você aqui.</strong> Não se preocupe — vamos facilitar ao máximo. Você só precisa preencher informações básicas e indicar onde está a documentação do seu modelo. O resto é com a gente!</div>
+      </div>
+
+      <div class="grid-2" style="gap:16px;margin-bottom:16px">
+        <div class="card card-pad">
+          <div class="card-title">Acesso à API</div>
+          <div class="field">
+            <label>Chave API Anthropic</label>
+            <div class="key-row">
+              <input type="password" id="api-key" placeholder="sk-ant-... (deixe em branco para demonstração)">
+              <button class="btn-eye" onclick="toggleKey()">👁</button>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--g300);margin-top:6px;line-height:1.5">Gere sua chave em <strong style="color:var(--blue)">console.anthropic.com</strong> → API Keys → Create Key</div>
+        </div>
+        <div class="card card-pad" style="background:var(--blue-l);border-color:rgba(0,92,169,.15)">
+          <div class="card-title">Como funciona?</div>
+          <div style="font-size:13px;color:var(--blue-d);line-height:1.7">
+            Você informa as fontes → nossos <strong>5 agentes de IA</strong> leem e analisam tudo → geramos o <strong>Model Card completo</strong> → você apenas revisa e confirma em minutos. 🎯
           </div>
         </div>
       </div>
-      <div class="cs">
-        <div class="cs-ttl">Dados do Modelo</div>
-        <div class="f"><label>Nome do Modelo <span class="req">*</span></label><input type="text" id="model-name" placeholder="ex.: Scoring de Crédito PF — Segmento Varejo"></div>
-        <div class="f frow">
-          <div><label>Área / Unidade <span class="req">*</span></label><input type="text" id="model-area" placeholder="ex.: Diretoria de Crédito"></div>
-          <div><label>Model Owner <span class="req">*</span></label><input type="text" id="model-owner" placeholder="Nome completo"></div>
+
+      <div class="card card-pad">
+        <div class="card-title">Dados do Modelo</div>
+        <div class="frow">
+          <div class="field" style="margin:0"><label>Nome do Modelo <span class="req">*</span></label><input type="text" id="model-name" placeholder="ex: Scoring de Crédito PF — Varejo"></div>
+          <div class="field" style="margin:0"><label>Área / Superintendência <span class="req">*</span></label><input type="text" id="model-area" placeholder="ex: SUPEC — Superintendência de Crédito"></div>
         </div>
-        <div class="f frow">
-          <div><label>E-mail do Owner <span class="req">*</span></label><input type="email" id="owner-email" placeholder="owner@instituicao.gov.br"></div>
-          <div><label>E-mail — Validação de Modelos <span class="req">*</span></label><input type="email" id="valid-email" placeholder="validacao.modelos@instituicao.gov.br"></div>
+        <div class="frow" style="margin-bottom:0">
+          <div class="field" style="margin:0"><label>Model Owner (seu nome) <span class="req">*</span></label><input type="text" id="model-owner" placeholder="Nome completo"></div>
+          <div class="field" style="margin:0"><label>Seu e-mail <span class="req">*</span></label><input type="email" id="owner-email" placeholder="owner@instituicao.gov.br"></div>
         </div>
-        <div class="f"><label>Descrição Breve (opcional)</label><textarea id="model-desc" placeholder="Finalidade, como é usado, quem consome a saída..."></textarea></div>
+      </div>
+
+      <div class="card card-pad" style="margin-top:14px">
+        <div class="card-title">Contato da Área de Validação</div>
+        <div class="frow" style="margin-bottom:0">
+          <div class="field" style="margin:0"><label>E-mail — Área de Validação de Modelos <span class="req">*</span></label><input type="email" id="val-email" placeholder="validacao.modelos@instituicao.gov.br"></div>
+          <div class="field" style="margin:0"><label>E-mail — Comitê de Modelos (opcional)</label><input type="email" id="comite-email" placeholder="comite.modelos@instituicao.gov.br"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <div></div>
+        <button class="btn btn-primary" onclick="goStep(2)">Próximo — Fontes →</button>
       </div>
     </div>
-    <div class="brow"><div></div><button class="btn btn-p" onclick="goTo(2)">Próximo — Fontes →</button></div>
+
+    <!-- WPANEL 2 -->
+    <div class="wpanel" id="wp2">
+      <div class="notice tip">
+        <div class="n-ico">📂</div>
+        <div>Você não precisa preparar nada especial. Selecione o tipo de fonte e <strong>indique onde está</strong> — pode ser um arquivo, um link do SharePoint, um notebook ou qualquer documento que descreva o modelo. Os agentes farão a leitura por você.</div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:14px">
+        <div class="card-title">Tipo de Fonte — marque todas que se aplicam</div>
+        <div class="src-grid">
+          <div class="src-tile" data-src="pdf"        onclick="togSrc(this)"><div class="src-ico">📄</div><div class="src-lbl">PDF / Word</div></div>
+          <div class="src-tile" data-src="sharepoint" onclick="togSrc(this)"><div class="src-ico">☁️</div><div class="src-lbl">SharePoint</div></div>
+          <div class="src-tile" data-src="databricks" onclick="togSrc(this)"><div class="src-ico">⚡</div><div class="src-lbl">Databricks</div></div>
+          <div class="src-tile" data-src="gcp"        onclick="togSrc(this)"><div class="src-ico">🔵</div><div class="src-lbl">Google Cloud</div></div>
+          <div class="src-tile" data-src="python"     onclick="togSrc(this)"><div class="src-ico">🐍</div><div class="src-lbl">Python / Jupyter</div></div>
+          <div class="src-tile" data-src="r"          onclick="togSrc(this)"><div class="src-ico">📊</div><div class="src-lbl">R / RMarkdown</div></div>
+          <div class="src-tile" data-src="git"        onclick="togSrc(this)"><div class="src-ico">🗂️</div><div class="src-lbl">Git / GitLab</div></div>
+          <div class="src-tile" data-src="link"       onclick="togSrc(this)"><div class="src-ico">🔗</div><div class="src-lbl">Link / URL</div></div>
+        </div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:14px">
+        <div class="card-title">Upload de Arquivos</div>
+        <div class="upz" id="drop-zone">
+          <input type="file" id="file-input" multiple accept=".pdf,.doc,.docx,.txt,.py,.r,.R,.ipynb,.md,.csv" onchange="handleFiles(this.files)">
+          <div class="upz-icon">⬆️</div>
+          <div class="upz-t">Arraste arquivos aqui ou clique para selecionar</div>
+          <div class="upz-h">PDF · DOCX · TXT · .py · .R · .ipynb · .md · .csv — máx. 20 MB por arquivo</div>
+        </div>
+        <div class="flist" id="file-list"></div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:14px">
+        <div class="card-title">Links de Repositórios ou Documentos</div>
+        <div class="lrow">
+          <input type="url" id="link-input" placeholder="https://sharepoint.../... ou https://gitlab.../...">
+          <button class="btn-al" onclick="addLink()">+ Adicionar</button>
+        </div>
+        <div class="chips" id="link-chips"></div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="card-title">Contexto Adicional (opcional mas bem-vindo!)</div>
+        <textarea id="extra-ctx" placeholder="Fique à vontade para colar trechos de código, descrever brevemente o modelo ou adicionar qualquer contexto que achar útil. Quanto mais informação, mais precisa será a análise! 😊"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(1)">← Voltar</button>
+        <button class="btn btn-primary" onclick="startAnalysis()">Analisar com Agentes →</button>
+      </div>
+    </div>
+
+    <!-- WPANEL 3 -->
+    <div class="wpanel" id="wp3">
+      <div class="analysis-wrap">
+        <div class="spinner" id="spinner"></div>
+        <h3 id="atitle">Agentes trabalhando para você</h3>
+        <p id="asub">Isso pode levar alguns segundos. Pode relaxar! ☕</p>
+        <div class="asteps">
+          <div class="as active" id="as1"><div class="as-dot"></div><div><div class="as-l">🗂 Agente de Ingestão</div><div class="as-s">Lendo e parseando todos os arquivos e links fornecidos</div></div></div>
+          <div class="as" id="as2"><div class="as-dot"></div><div><div class="as-l">🔍 Agente RAG — Extração</div><div class="as-s">Respondendo perguntas de catalogação com base nas fontes</div></div></div>
+          <div class="as" id="as3"><div class="as-dot"></div><div><div class="as-l">🏷 Agente Classificador</div><div class="as-s">Identificando família, técnica e plataforma do modelo</div></div></div>
+          <div class="as" id="as4"><div class="as-dot"></div><div><div class="as-l">⚖️ Agente de Criticidade</div><div class="as-s">Calculando pontuação nas 6 dimensões de risco de modelo</div></div></div>
+          <div class="as" id="as5"><div class="as-dot"></div><div><div class="as-l">📋 Geração do Model Card</div><div class="as-s">Consolidando ficha e preparando mensageria automática</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WPANEL 4 -->
+    <div class="wpanel" id="wp4">
+      <div class="sbanner" id="sbanner"><div class="sb-ico">✅</div><div class="sb-txt" id="sb-txt">—</div></div>
+      <div id="mc-container"></div>
+    </div>
+
+  </div><!-- /card-pad -->
+</div><!-- /card -->
+```
+
+  </div><!-- /page-catalog -->
+
+  <!-- ════════════ PAGE: VALIDAÇÃO ════════════ -->
+
+  <div class="page" id="page-validation">
+    <div class="ph">
+      <div class="ph-eyebrow">Área de Validação de Modelos</div>
+      <div class="ph-title">Fila de Validação</div>
+      <div class="ph-desc">Analise, aprecie e ratifique os Model Cards catalogados. Outras unidades também podem manifestar-se.</div>
+    </div>
+
+```
+<div class="val-filters">
+  <button class="filter-btn active" onclick="filterVal('all',this)">Todos</button>
+  <button class="filter-btn" onclick="filterVal('N1',this)">🔴 N1 — Crítico</button>
+  <button class="filter-btn" onclick="filterVal('N2',this)">🟠 N2 — Alto</button>
+  <button class="filter-btn" onclick="filterVal('N3',this)">🟡 N3 — Médio</button>
+  <button class="filter-btn" onclick="filterVal('N4',this)">🟢 N4 — Baixo</button>
+  <button class="filter-btn" onclick="filterVal('pending',this)">⏳ Aguardando</button>
+  <button class="filter-btn" onclick="filterVal('approved',this)">✅ Ratificados</button>
+</div>
+
+<div class="card" style="overflow:hidden">
+  <table class="model-table" id="val-table">
+    <thead>
+      <tr>
+        <th>ID / Chave Única</th>
+        <th>Modelo</th>
+        <th>Área</th>
+        <th>Família</th>
+        <th>Criticidade</th>
+        <th>Status</th>
+        <th>Data</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody id="val-tbody"></tbody>
+  </table>
+</div>
+```
+
   </div>
 
-  <!-- PANEL 2 -->
+  <!-- ════════════ PAGE: BI ════════════ -->
 
-  <div class="panel" id="panel-2">
-    <div class="sh"><h2>Fontes de Documentação</h2><p>Selecione as origens e envie os documentos do modelo</p></div>
-    <div class="card">
-      <div class="cs">
-        <div class="cs-ttl">Tipo de Fonte</div>
-        <div class="srcg">
-          <div class="sb" data-s="pdf" onclick="togSrc(this)"><span class="si">📄</span><span class="sl">PDF / Word</span></div>
-          <div class="sb" data-s="sharepoint" onclick="togSrc(this)"><span class="si">☁️</span><span class="sl">SharePoint</span></div>
-          <div class="sb" data-s="databricks" onclick="togSrc(this)"><span class="si">⚡</span><span class="sl">Databricks</span></div>
-          <div class="sb" data-s="gcp" onclick="togSrc(this)"><span class="si">🔵</span><span class="sl">Google Cloud</span></div>
-          <div class="sb" data-s="python" onclick="togSrc(this)"><span class="si">🐍</span><span class="sl">Python / Jupyter</span></div>
-          <div class="sb" data-s="r" onclick="togSrc(this)"><span class="si">📊</span><span class="sl">R / RMarkdown</span></div>
-          <div class="sb" data-s="git" onclick="togSrc(this)"><span class="si">🗂️</span><span class="sl">Git / GitLab</span></div>
-          <div class="sb" data-s="link" onclick="togSrc(this)"><span class="si">🔗</span><span class="sl">Link / URL</span></div>
-        </div>
-      </div>
-      <div class="cs">
-        <div class="cs-ttl">Upload de Documentos</div>
-        <div class="dz" id="dz">
-          <input type="file" id="fi" multiple accept=".pdf,.doc,.docx,.txt,.py,.r,.R,.ipynb,.md,.csv" onchange="handleFiles(this.files)">
-          <div style="font-size:22px;margin-bottom:5px;">⬆</div>
-          <div class="dl">Arraste arquivos ou clique para selecionar</div>
-          <div class="dh">PDF · DOCX · TXT · .py · .R · .ipynb · .md · .csv</div>
-        </div>
-        <div class="flist" id="flist"></div>
-      </div>
-      <div class="cs">
-        <div class="cs-ttl">Links de Repositórios</div>
-        <div class="irow">
-          <input type="url" id="linkin" placeholder="https://sharepoint... ou https://gitlab...">
-          <button class="btn btn-g" style="white-space:nowrap;padding:8px 14px" onclick="addLink()">+ Adicionar</button>
-        </div>
-        <div class="chips" id="chips"></div>
-      </div>
-      <div class="cs">
-        <div class="cs-ttl">Contexto Adicional</div>
-        <textarea id="ctx" style="min-height:80px" placeholder="Cole trechos de código, especificações técnicas ou outputs do modelo..."></textarea>
-      </div>
+  <div class="page" id="page-bi">
+    <div class="ph">
+      <div class="ph-eyebrow">Painel Executivo</div>
+      <div class="ph-title">Inventário de Modelos</div>
+      <div class="ph-desc">Visão consolidada do portfólio de modelos. Acesso analítico ou executivo conforme perfil.</div>
     </div>
-    <div class="brow">
-      <button class="btn btn-g" onclick="goTo(1)">← Voltar</button>
-      <button class="btn btn-p" onclick="startAnalysis()">Analisar com Agentes →</button>
-    </div>
+
+```
+<div class="bi-kpi-grid">
+  <div class="kpi-card kpi-blue">
+    <div class="kpi-label">Total de Modelos</div>
+    <div class="kpi-value" id="bi-total">12</div>
+    <div class="kpi-sub">no inventário ativo</div>
   </div>
+  <div class="kpi-card kpi-red">
+    <div class="kpi-label">Críticos (N1)</div>
+    <div class="kpi-value" id="bi-n1" style="color:var(--red)">3</div>
+    <div class="kpi-sub">validação prioritária</div>
+  </div>
+  <div class="kpi-card kpi-green">
+    <div class="kpi-label">Ratificados</div>
+    <div class="kpi-value" id="bi-rat" style="color:var(--green)">8</div>
+    <div class="kpi-sub">pela área de validação</div>
+  </div>
+  <div class="kpi-card kpi-orange">
+    <div class="kpi-label">Aguardando</div>
+    <div class="kpi-value" id="bi-pend" style="color:var(--orange)">4</div>
+    <div class="kpi-sub">moderação ou validação</div>
+  </div>
+</div>
 
-  <!-- PANEL 3 -->
-
-  <div class="panel" id="panel-3">
-    <div class="awrap">
-      <div class="spin" id="spin"></div>
-      <div class="at" id="a-t">Agentes em execução</div>
-      <div class="as" id="a-s">Processando fontes e extraindo metadados do modelo...</div>
-      <div class="asteps">
-        <div class="astep active" id="as1"><div class="adot"></div><div><div class="am">Agente de Ingestão</div><div class="asb">Lendo arquivos e links fornecidos</div></div></div>
-        <div class="astep" id="as2"><div class="adot"></div><div><div class="am">Agente RAG — Extração</div><div class="asb">Respondendo perguntas de catalogação pelas fontes</div></div></div>
-        <div class="astep" id="as3"><div class="adot"></div><div><div class="am">Agente Classificador</div><div class="asb">Identificando família e técnica do modelo</div></div></div>
-        <div class="astep" id="as4"><div class="adot"></div><div><div class="am">Agente de Criticidade</div><div class="asb">Calculando pontuação nas 6 dimensões de risco</div></div></div>
-        <div class="astep" id="as5"><div class="adot"></div><div><div class="am">Geração do Model Card</div><div class="asb">Consolidando ficha para moderação do owner</div></div></div>
+<div class="grid-2" style="margin-bottom:16px">
+  <div class="bi-chart-wrap">
+    <div class="bi-chart-title">Distribuição por Criticidade</div>
+    <div class="donut-wrap">
+      <div class="donut">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="52" fill="none" stroke="var(--g100)" stroke-width="22"/>
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#B83232" stroke-width="22" stroke-dasharray="65 262" stroke-dashoffset="0"/>
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#F47920" stroke-width="22" stroke-dasharray="52 262" stroke-dashoffset="-65"/>
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#9A6200" stroke-width="22" stroke-dasharray="39 262" stroke-dashoffset="-117"/>
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#1B7F4F" stroke-width="22" stroke-dasharray="78 262" stroke-dashoffset="-156"/>
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#B8BEC9" stroke-width="22" stroke-dasharray="28 262" stroke-dashoffset="-234"/>
+        </svg>
+        <div class="donut-center"><div class="donut-center-v">12</div><div class="donut-center-l">modelos</div></div>
+      </div>
+      <div class="donut-legend">
+        <div class="dl-item"><div class="dl-dot" style="background:#B83232"></div><div class="dl-name">N1 Crítico</div><div class="dl-val">3</div></div>
+        <div class="dl-item"><div class="dl-dot" style="background:#F47920"></div><div class="dl-name">N2 Alto</div><div class="dl-val">2</div></div>
+        <div class="dl-item"><div class="dl-dot" style="background:#9A6200"></div><div class="dl-name">N3 Médio</div><div class="dl-val">2</div></div>
+        <div class="dl-item"><div class="dl-dot" style="background:#1B7F4F"></div><div class="dl-name">N4 Baixo</div><div class="dl-val">4</div></div>
+        <div class="dl-item"><div class="dl-dot" style="background:#B8BEC9"></div><div class="dl-name">N5 Mínimo</div><div class="dl-val">1</div></div>
       </div>
     </div>
   </div>
+  <div class="bi-chart-wrap">
+    <div class="bi-chart-title">Modelos por Família</div>
+    <div class="bar-chart">
+      <div class="bar-row"><div class="bar-label">Machine Learning</div><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--blue)">5</div></div><div class="bar-val">5</div></div>
+      <div class="bar-row"><div class="bar-label">Estatístico Clássico</div><div class="bar-track"><div class="bar-fill" style="width:30%;background:var(--teal)">3</div></div><div class="bar-val">3</div></div>
+      <div class="bar-row"><div class="bar-label">Matemático/Financeiro</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--orange)">2</div></div><div class="bar-val">2</div></div>
+      <div class="bar-row"><div class="bar-label">Especialista</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:var(--amber)">1</div></div><div class="bar-val">1</div></div>
+      <div class="bar-row"><div class="bar-label">IA Generativa/LLM</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:var(--red)">1</div></div><div class="bar-val">1</div></div>
+    </div>
+  </div>
+</div>
 
-  <!-- PANEL 4 -->
+<div class="bi-table-wrap">
+  <div class="bi-table-header">
+    <div class="bi-table-title">Inventário Completo</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-sm btn-secondary">Exportar CSV</button>
+      <button class="btn btn-sm btn-primary">Exportar PDF</button>
+    </div>
+  </div>
+  <table class="model-table">
+    <thead>
+      <tr>
+        <th>Chave Única</th>
+        <th>Modelo</th>
+        <th>Família</th>
+        <th>Criticidade</th>
+        <th>Pontuação</th>
+        <th>Uso Regulatório</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="bi-tbody"></tbody>
+  </table>
+</div>
+```
 
-  <div class="panel" id="panel-4">
-    <div class="sh"><h2>Model Card — Revisão</h2><p>Ficha gerada pelos agentes. Revise, corrija se necessário e confirme.</p></div>
-    <div class="notice warn" id="mod-notice"><div class="ni">⚠️</div><div><strong>Aguardando moderação.</strong> Campos estimados pelos agentes. Corrija o necessário e registre sua decisão ao final.</div></div>
-    <div class="card" id="mc-el">
-      <div class="mc-hdr">
-        <div><div class="mc-fam" id="mc-fam">—</div><div class="mc-nm" id="mc-nm">—</div><div class="mc-id" id="mc-id">—</div></div>
-        <div style="text-align:center;flex-shrink:0;">
-          <div class="cring" id="cring"><div class="clv" id="clv">—</div><div class="clx">NÍVEL</div></div>
-          <div class="cnm" id="cnm">—</div>
+  </div>
+
+  <!-- ════════════ PAGE: SAIBA MAIS ════════════ -->
+
+  <div class="page" id="page-saibamais">
+    <div class="sm-hero">
+      <div class="sm-hero-eyebrow">Guia Completo</div>
+      <div class="sm-hero-title">Como o ModelScan funciona?</div>
+      <div class="sm-hero-desc">Entenda cada etapa do processo de catalogação inteligente — dos agentes de IA ao Model Card final. Simples, transparente e feito para apoiar você.</div>
+    </div>
+
+```
+<div class="card card-pad" style="margin-bottom:20px">
+  <div class="card-title">Jornada completa — passo a passo</div>
+  <div class="sm-steps">
+
+    <div class="sm-step">
+      <div class="sm-step-left"><div class="sm-step-num">1</div><div class="sm-step-line"></div></div>
+      <div class="sm-step-body">
+        <div class="sm-step-title">Identificação do Modelo</div>
+        <div class="sm-step-desc">Você começa informando os dados básicos: nome do modelo, área responsável e quem é o Model Owner. Também insere os contatos de e-mail para que as notificações cheguem automaticamente às pessoas certas após a conclusão. <strong>Não precisa saber tudo — informe o que souber.</strong> Os agentes completam o restante.</div>
+        <div class="sm-step-note">💡 Dica: o nome do modelo pode ser informal agora. A área de validação poderá padronizar na etapa de ratificação.</div>
+      </div>
+    </div>
+
+    <div class="sm-step">
+      <div class="sm-step-left"><div class="sm-step-num">2</div><div class="sm-step-line"></div></div>
+      <div class="sm-step-body">
+        <div class="sm-step-title">Indicação das Fontes</div>
+        <div class="sm-step-desc">Aqui você indica onde o modelo está documentado. Pode ser um arquivo PDF ou Word com a especificação técnica, um notebook Jupyter (.ipynb), scripts Python ou R, links do SharePoint, repositórios Git, projetos Databricks ou ambientes Google Cloud. Você pode combinar quantas fontes quiser — o sistema aceita tudo.</div>
+        <div class="agent-pills">
+          <span class="agent-pill">📄 PDF / Word</span>
+          <span class="agent-pill">🐍 Python / Jupyter</span>
+          <span class="agent-pill">📊 R / RMarkdown</span>
+          <span class="agent-pill">☁️ SharePoint</span>
+          <span class="agent-pill">⚡ Databricks</span>
+          <span class="agent-pill">🔵 Google Cloud</span>
+          <span class="agent-pill">🗂️ Git / GitLab</span>
+          <span class="agent-pill">🔗 Links externos</span>
         </div>
       </div>
+    </div>
+
+    <div class="sm-step">
+      <div class="sm-step-left"><div class="sm-step-num">3</div><div class="sm-step-line"></div></div>
+      <div class="sm-step-body">
+        <div class="sm-step-title">Pipeline de 5 Agentes de IA</div>
+        <div class="sm-step-desc">Ao clicar em "Analisar", cinco agentes especializados entram em ação sequencialmente:</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+          <div class="sm-step-note"><strong>🗂 Agente de Ingestão —</strong> lê e parseia todos os arquivos e links enviados, convertendo o conteúdo bruto em fragmentos de texto processáveis.</div>
+          <div class="sm-step-note"><strong>🔍 Agente RAG (Extração) —</strong> usa Recuperação Aumentada por Geração para responder as perguntas do formulário de catalogação diretamente a partir das fontes. Ele "sabe" o que está nos documentos e extrai: finalidade, inputs, outputs, técnica, plataforma, uso regulatório, grau de autonomia decisória.</div>
+          <div class="sm-step-note"><strong>🏷 Agente Classificador —</strong> enquadra o modelo em uma das 5 famílias (Estatístico Clássico, Matemático/Financeiro, Especialista/Julgamental, Machine Learning ou IA Generativa/LLM) e identifica a técnica principal.</div>
+          <div class="sm-step-note"><strong>⚖️ Agente de Criticidade —</strong> aplica a matriz de 6 dimensões ponderadas (Impacto Financeiro, Exposição Regulatória, Autonomia Decisória, Opacidade, Abrangência e Maturidade) para calcular o nível de risco de N1 (Crítico) a N5 (Mínimo).</div>
+          <div class="sm-step-note"><strong>📋 Agente de Síntese —</strong> consolida tudo em um Model Card estruturado, gera a chave única do modelo e prepara as mensagens automáticas para os destinatários.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sm-step">
+      <div class="sm-step-left"><div class="sm-step-num">4</div><div class="sm-step-line"></div></div>
+      <div class="sm-step-body">
+        <div class="sm-step-title">Model Card + Moderação do Owner</div>
+        <div class="sm-step-desc">O Model Card completo é gerado automaticamente com uma <strong>chave única</strong> (ex: MDL-A3F9K2). Você revisa os campos preenchidos pela IA, corrige o que precisar e confirma ou solicita revisão. O tempo médio desta etapa é de 5 a 10 minutos — bem menos que qualquer formulário tradicional.</div>
+        <div class="sm-step-note">💡 Se a confiança da análise estiver abaixo de 60%, o sistema sinalizará os campos que precisam de mais atenção.</div>
+      </div>
+    </div>
+
+    <div class="sm-step">
+      <div class="sm-step-left"><div class="sm-step-num">5</div><div class="sm-step-line"></div></div>
+      <div class="sm-step-body">
+        <div class="sm-step-title">Mensageria Automática</div>
+        <div class="sm-step-desc">Ao finalizar, dois e-mails são enviados automaticamente: um para o <strong>Model Owner</strong> com o resumo do card e os próximos passos; outro para a <strong>Área de Validação de Modelos</strong> com o card técnico completo, pontuação de criticidade, controles recomendados e escopo de validação — tudo pronto para priorização da fila.</div>
+      </div>
+    </div>
+
+    <div class="sm-step">
+      <div class="sm-step-left"><div class="sm-step-num">6</div><div class="sm-step-line"></div></div>
+      <div class="sm-step-body">
+        <div class="sm-step-title">Ratificação pela Área de Validação</div>
+        <div class="sm-step-desc">Na aba "Área de Validação", os analistas da equipe revisam cada Model Card, podem corrigir qualquer campo — inclusive o nível de criticidade —, adicionar observações técnicas e registrar a ratificação. Outras unidades (Auditoria, Compliance, Risco Operacional) também podem manifestar-se diretamente na ficha.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="card card-pad">
+  <div class="card-title">Perguntas frequentes</div>
+  <div class="sm-faq" id="faq-container">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Preciso ter documentação formal para usar o sistema? <span class="faq-ico">+</span></div>
+      <div class="faq-a">Não! O sistema foi pensado para funcionar com o que você já tem — pode ser um README no repositório, comentários no código, uma apresentação em PowerPoint ou qualquer coisa que descreva o modelo. Quanto mais informação, mais precisa a análise, mas você não precisa preparar nada especial.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">O que é a chave única do modelo? <span class="faq-ico">+</span></div>
+      <div class="faq-a">Cada modelo catalogado recebe um identificador único (ex: MDL-A3F9K2) que serve como referência permanente no inventário institucional. Ele aparece no Model Card, nas notificações de e-mail e em todo o ciclo de validação e monitoramento.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">O que acontece se eu discordar do nível de criticidade sugerido? <span class="faq-ico">+</span></div>
+      <div class="faq-a">Você pode solicitar revisão na etapa de moderação, adicionando uma observação. A Área de Validação terá acesso à sua justificativa e poderá corrigir o nível durante a ratificação. O nível final sempre é determinado pelo analista de validação.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Quanto tempo leva todo o processo? <span class="faq-ico">+</span></div>
+      <div class="faq-a">A análise pelos agentes leva entre 15 e 45 segundos. A moderação pelo Owner costuma levar de 5 a 10 minutos. O processo inteiro — da primeira tela ao card registrado — pode ser concluído em menos de 20 minutos para a grande maioria dos modelos.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Meus arquivos ficam salvos onde? <span class="faq-ico">+</span></div>
+      <div class="faq-a">Os arquivos enviados são lidos localmente no seu navegador e processados para extração de texto. O conteúdo textual é enviado à API da Anthropic para análise. O Model Card gerado é salvo no inventário da plataforma. Veja a aba "Onde ficam os arquivos" para o mapa completo de armazenamento.</div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ════════════ PAGE: STORAGE ════════════ -->
+
+  <div class="page" id="page-storage">
+    <div class="ph">
+      <div class="ph-eyebrow">Transparência de Dados</div>
+      <div class="ph-title">Onde ficam os arquivos?</div>
+      <div class="ph-desc">Saiba exatamente onde cada tipo de dado é armazenado e quem tem acesso. Tudo documentado para facilitar a governança.</div>
+    </div>
+
+```
+<div class="notice info" style="margin-bottom:20px">
+  <div class="n-ico">🔒</div>
+  <div>Os arquivos enviados <strong>não são armazenados permanentemente</strong> pela aplicação — apenas lidos para extração de texto durante a análise. O que fica salvo é o <strong>Model Card estruturado</strong>, não os documentos originais.</div>
+</div>
+
+<div class="storage-map">
+  <div class="storage-item">
+    <div class="storage-icon">📋</div>
+    <div class="storage-body">
+      <div class="storage-title">Model Cards (fichas de catalogação)</div>
+      <div class="storage-path">/inventario/model-cards/{ID_MODELO}/</div>
+      <div class="storage-desc">Cada Model Card gerado é salvo com sua chave única. Contém todos os metadados: família, técnica, pontuação de criticidade, controles recomendados e histórico de moderação.</div>
+    </div>
+  </div>
+  <div class="storage-item">
+    <div class="storage-icon">📧</div>
+    <div class="storage-body">
+      <div class="storage-title">Notificações e Mensagens</div>
+      <div class="storage-path">/inventario/mensageria/{ID_MODELO}/</div>
+      <div class="storage-desc">Cópia de cada e-mail enviado (owner + validação) fica registrada aqui com timestamp, destinatários e conteúdo para fins de auditoria e rastreabilidade.</div>
+    </div>
+  </div>
+  <div class="storage-item">
+    <div class="storage-icon">🔍</div>
+    <div class="storage-body">
+      <div class="storage-title">Histórico de Validação</div>
+      <div class="storage-path">/inventario/validacoes/{ID_MODELO}/</div>
+      <div class="storage-desc">Registro de todas as interações da Área de Validação: ratificações, correções, manifestações de outras unidades e histórico de alterações no nível de criticidade.</div>
+    </div>
+  </div>
+  <div class="storage-item">
+    <div class="storage-icon">📊</div>
+    <div class="storage-body">
+      <div class="storage-title">Base do Inventário (BI)</div>
+      <div class="storage-path">/inventario/consolidado/inventario.json</div>
+      <div class="storage-desc">Arquivo consolidado com todos os modelos ativos, usado para alimentar o Painel BI. Atualizado automaticamente a cada nova catalogação ou ratificação.</div>
+    </div>
+  </div>
+  <div class="storage-item">
+    <div class="storage-icon">🗃️</div>
+    <div class="storage-body">
+      <div class="storage-title">Arquivos originais (referência)</div>
+      <div class="storage-path">/inventario/fontes/{ID_MODELO}/</div>
+      <div class="storage-desc">Os arquivos enviados pelo Owner ficam armazenados aqui para consulta futura pela Área de Validação. Acesso restrito por perfil. Retenção: 5 anos ou conforme política institucional.</div>
+    </div>
+  </div>
+  <div class="storage-item">
+    <div class="storage-icon">🔑</div>
+    <div class="storage-body">
+      <div class="storage-title">Chaves únicas de modelo</div>
+      <div class="storage-path">/inventario/registro-ids/</div>
+      <div class="storage-desc">Registro central de todos os identificadores gerados. Garante unicidade e rastreabilidade de cada modelo ao longo de todo o seu ciclo de vida (criação, validação, monitoramento, descomissionamento).</div>
+    </div>
+  </div>
+</div>
+
+<div class="card card-pad" style="margin-top:20px">
+  <div class="card-title">Acesso por Perfil</div>
+  <table class="model-table">
+    <thead>
+      <tr><th>Dado / Arquivo</th><th>Model Owner</th><th>Área de Validação</th><th>Comitê de Modelos</th><th>Auditoria</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Model Card (ficha)</td><td>✅ Leitura/Edição</td><td>✅ Leitura/Edição</td><td>✅ Leitura</td><td>✅ Leitura</td></tr>
+      <tr><td>Arquivos originais</td><td>✅ Leitura</td><td>✅ Leitura</td><td>❌</td><td>✅ Leitura</td></tr>
+      <tr><td>Histórico de validação</td><td>✅ Leitura</td><td>✅ Leitura/Edição</td><td>✅ Leitura</td><td>✅ Leitura</td></tr>
+      <tr><td>Painel BI</td><td>Parcial (próprios)</td><td>✅ Completo</td><td>✅ Executivo</td><td>✅ Completo</td></tr>
+      <tr><td>Inventário consolidado</td><td>❌</td><td>✅ Completo</td><td>✅ Leitura</td><td>✅ Leitura</td></tr>
+    </tbody>
+  </table>
+</div>
+```
+
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /main-area -->
+
+<!-- ════════════ MODAL VALIDAÇÃO ════════════ -->
+
+<div class="modal-overlay" id="val-modal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-header">
       <div>
-        <div class="mcs"><div class="mcs-lbl">Descrição e Finalidade</div><div class="mcd" id="mc-desc">—</div></div>
-        <div class="mcs">
-          <div class="mcs-lbl">Identificação</div>
-          <div class="mg">
-            <div class="mc"><div class="mcl">Área Responsável</div><div class="mcv" id="mc-area">—</div></div>
-            <div class="mc"><div class="mcl">Model Owner</div><div class="mcv" id="mc-owner">—</div></div>
-            <div class="mc"><div class="mcl">Técnica Principal</div><div class="mcv" id="mc-tech">—</div></div>
-            <div class="mc"><div class="mcl">Plataforma / Ambiente</div><div class="mcv" id="mc-plat">—</div></div>
-            <div class="mc"><div class="mcl">Inputs Principais</div><div class="mcv" id="mc-inp">—</div></div>
-            <div class="mc"><div class="mcl">Outputs / Decisão</div><div class="mcv" id="mc-out">—</div></div>
-            <div class="mc"><div class="mcl">Autonomia Decisória</div><div class="mcv" id="mc-aut">—</div></div>
-            <div class="mc"><div class="mcl">Uso Regulatório</div><div class="mcv" id="mc-reg">—</div></div>
-          </div>
-        </div>
-        <div class="mcs">
-          <div class="mcs-lbl">Pontuação de Criticidade</div>
-          <div class="srows" id="srows"></div>
-          <div class="conf-row"><div class="cl">Confiança da análise</div><div class="cv" id="cv">—%</div><div class="ctrk"><div class="cfil" id="cfil" style="width:0%"></div></div></div>
-        </div>
-        <div class="mcs"><div class="mcs-lbl">Tags</div><div class="tags" id="mc-tags"></div></div>
-        <div class="mcs"><div class="mcs-lbl">Controles Recomendados</div><div class="ctls" id="mc-ctls"></div></div>
-        <div class="mcs"><div class="mcs-lbl">Escopo de Validação</div><div class="mcsc" id="mc-sc">—</div></div>
-        <!-- MOD -->
-        <div class="mhdr"><div class="mt">Moderação do Model Owner</div><div class="ms">Corrija campos se necessário e registre sua decisão</div></div>
-        <div class="mbody">
-          <div class="f frow">
-            <div><label>Corrigir Técnica Principal</label><input type="text" id="mod-tech" placeholder="Confirme ou corrija..."></div>
-            <div><label>Corrigir Autonomia Decisória</label>
-              <select id="mod-aut">
-                <option value="">— manter sugerido —</option>
-                <option>100% automatizado, sem revisão humana</option>
-                <option>Revisão humana apenas em exceções</option>
-                <option>Aprovação humana sistemática</option>
-                <option>Subsídio analítico — decisão é humana</option>
-                <option>Apenas informativo / monitoramento</option>
-              </select>
-            </div>
-          </div>
-          <div class="f"><label>Decisão</label>
-            <div class="drow">
-              <button class="db approve" id="btn-app" onclick="setDec('approve')">✓ Confirmo a ficha</button>
-              <button class="db reject"  id="btn-rej" onclick="setDec('reject')">↩ Solicito revisão</button>
-            </div>
-          </div>
-          <div class="f"><label>Observações</label><textarea id="mod-obs" placeholder="Contexto adicional, correções ou justificativa para revisão..."></textarea></div>
-          <div class="brow" style="border-top:1px solid var(--g100);padding-top:14px;">
-            <button class="btn btn-g" onclick="goTo(2)">← Reenviar Fontes</button>
-            <button class="btn btn-p" id="btn-fin" onclick="finalizeCard()" disabled>Finalizar e Gerar Mensageria →</button>
-          </div>
-        </div>
-        <div class="expbar"><div class="explbl">Exportar</div><div class="expbtns"><button class="bsm" onclick="exportJSON()">JSON</button><button class="bsm" onclick="exportTXT()">TXT</button><button class="bsm" onclick="window.print()">PDF</button></div></div>
-        <div class="mcft" id="mcft">Aguardando moderação do Model Owner</div>
+        <div id="modal-uid" style="font-family:var(--mono);font-size:11px;color:var(--g300);margin-bottom:4px"></div>
+        <div class="modal-title" id="modal-name">—</div>
+        <div class="modal-sub" id="modal-area">—</div>
       </div>
     </div>
-  </div>
-
-  <!-- PANEL 5 -->
-
-  <div class="panel" id="panel-5">
-    <div class="sh"><h2>Catalogação Concluída</h2><p>Mensagens geradas para o Model Owner e para a Área de Validação de Modelos</p></div>
-    <div class="notice ok" id="concl-notice"><div class="ni">✅</div><div id="concl-txt">Model Card registrado com sucesso.</div></div>
 
 ```
-<!-- MESSAGING -->
-<div class="card">
-  <div class="mp-hdr"><div class="mp-ico">✉️</div><div><div class="mp-t">Mensageria de Conclusão</div><div class="mp-s" id="mp-sub">Notificações geradas automaticamente</div></div></div>
-  <div class="mtabs">
-    <div class="mtab active" id="tab-owner" onclick="showTab('owner')">📨 Para o Owner <span class="mbadge">1</span></div>
-    <div class="mtab" id="tab-valid" onclick="showTab('valid')">📋 Para Validação <span class="mbadge">1</span></div>
-  </div>
-  <div id="tb-owner">
-    <div class="msg-body-wrap">
-      <div class="mcard">
-        <div class="menv"><div class="menv-ico">📨</div><div><div class="menv-lbl">Para</div><div class="menv-to" id="mto-ow">—</div></div></div>
-        <div class="mcont"><div class="msubj" id="msj-ow">—</div><div class="mbtext" id="mbt-ow">—</div></div>
+<div id="modal-card-preview" style="margin-bottom:24px"></div>
+
+<div style="margin-bottom:22px">
+  <div style="font-size:13px;font-weight:600;color:var(--g900);margin-bottom:14px">Manifestação de outras unidades</div>
+  <div id="unit-comments">
+    <div class="unit-comment">
+      <div class="uc-header">
+        <div class="uc-avatar">AU</div>
+        <div class="uc-name">Auditoria Interna</div>
+        <div class="uc-time">há 2 dias</div>
       </div>
-    </div>
-    <div class="macts">
-      <button class="btn btn-p" style="font-size:12px;padding:7px 14px" onclick="copyMsg('owner')">📋 Copiar</button>
-      <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="exportMsgTXT('owner')">⬇ Baixar .txt</button>
+      <div class="uc-text">Confirmamos que o modelo está em uso em produção desde jan/2024. Não identificamos registros de validação anterior no GED. Sugerimos elevação de D6 (maturidade) para 4, dado histórico de 18 meses sem incidentes.</div>
     </div>
   </div>
-  <div id="tb-valid" style="display:none">
-    <div class="msg-body-wrap">
-      <div class="mcard">
-        <div class="menv"><div class="menv-ico">📋</div><div><div class="menv-lbl">Para</div><div class="menv-to" id="mto-vl">—</div></div></div>
-        <div class="mcont"><div class="msubj" id="msj-vl">—</div><div class="mbtext" id="mbt-vl">—</div></div>
-      </div>
+  <div style="margin-top:12px">
+    <div class="frow" style="margin-bottom:10px">
+      <div class="field" style="margin:0"><label>Sua unidade</label><input type="text" id="unit-name" placeholder="ex: Compliance, Auditoria, Risco Operacional..."></div>
+      <div class="field" style="margin:0"><label>Seu nome</label><input type="text" id="unit-person" placeholder="Nome completo"></div>
     </div>
-    <div class="macts">
-      <button class="btn btn-p" style="font-size:12px;padding:7px 14px" onclick="copyMsg('valid')">📋 Copiar</button>
-      <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="exportMsgTXT('valid')">⬇ Baixar .txt</button>
-    </div>
+    <div class="field"><label>Manifestação / Observações</label><textarea id="unit-obs" placeholder="Adicione sua manifestação, comentários técnicos ou contestação fundamentada..."></textarea></div>
+    <button class="btn btn-secondary btn-sm" onclick="addUnitComment()">+ Registrar manifestação</button>
   </div>
 </div>
 
-<!-- SUMMARY -->
-<div class="card">
-  <div class="cs"><div class="cs-ttl">Resumo do Registro</div><div class="sum-grid" id="sum-grid"></div></div>
-  <div class="sum-foot">
-    <button class="btn btn-p" style="font-size:12px;padding:8px 14px" onclick="exportJSON()">⬇ Model Card JSON</button>
-    <button class="btn btn-g" style="font-size:12px;padding:8px 14px" onclick="exportTXT()">⬇ Model Card TXT</button>
-    <button class="btn btn-o" style="font-size:12px;padding:8px 14px" onclick="newCard()">+ Catalogar Novo Modelo</button>
+<div style="border-top:1px solid var(--g100);padding-top:20px">
+  <div style="font-size:13px;font-weight:600;color:var(--g900);margin-bottom:14px">Decisão da Área de Validação</div>
+  <div class="frow3" style="margin-bottom:14px">
+    <div class="field" style="margin:0"><label>Corrigir Nível de Criticidade</label>
+      <select id="val-crit">
+        <option value="">— manter sugerido —</option>
+        <option value="N1">N1 — Crítico</option>
+        <option value="N2">N2 — Alto</option>
+        <option value="N3">N3 — Médio</option>
+        <option value="N4">N4 — Baixo</option>
+        <option value="N5">N5 — Mínimo</option>
+      </select>
+    </div>
+    <div class="field" style="margin:0"><label>Corrigir Técnica Principal</label><input type="text" id="val-tech" placeholder="Confirme ou corrija..."></div>
+    <div class="field" style="margin:0"><label>Analista Responsável</label><input type="text" id="val-analyst" placeholder="Nome do analista de validação"></div>
+  </div>
+  <div class="field"><label>Parecer Técnico (obrigatório para ratificação)</label><textarea id="val-parecer" placeholder="Registre o parecer técnico da área de validação, incluindo fundamentação da criticidade e recomendações específicas..."></textarea></div>
+  <div style="display:flex;gap:10px;margin-top:14px">
+    <button class="dec-btn approve" style="flex:1" onclick="ratifyModel('approve')">✓ Ratificar Model Card</button>
+    <button class="dec-btn reject"  style="flex:1" onclick="ratifyModel('reject')">↩ Solicitar correção ao Owner</button>
   </div>
 </div>
 ```
 
   </div>
-
 </div>
+
+</div><!-- /shell -->
 
 <script>
-const PROG={1:10,2:30,3:60,4:82,5:100};
-const DL={D1_impacto_financeiro:'D1 · Impacto Financeiro',D2_exposicao_regulatoria:'D2 · Exposição Regulatória',D3_autonomia_decisoria:'D3 · Autonomia Decisória',D4_opacidade:'D4 · Opacidade',D5_abrangencia:'D5 · Abrangência',D6_maturidade:'D6 · Maturidade'};
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
 let files=[],links=[],sources=[],result=null,decision=null;
-const el=id=>document.getElementById(id);
-const v=id=>el(id).value.trim();
-const delay=ms=>new Promise(r=>setTimeout(r,ms));
+let currentModelId=null;
 
-function goTo(s){
-  if(s===2){const n=v('model-name'),a=v('model-area'),o=v('model-owner'),e=v('owner-email'),ve=v('valid-email');if(!n||!a||!o||!e||!ve){alert('Preencha todos os campos obrigatórios (*)');return;}}
-  [1,2,3,4,5].forEach(i=>{
-    el(`panel-${i}`).classList.toggle('active',i===s);
-    const stp=el(`stp-${i}`);
-    stp.classList.toggle('active',i===s);
-    const dot=stp.querySelector('.sdot');
-    if(i<s){stp.classList.add('done');dot.textContent='✓';}
-    else{stp.classList.remove('done');dot.textContent=i;}
-  });
-  el('pgf').style.width=PROG[s]+'%';
-  window.scrollTo({top:0,behavior:'smooth'});
+// Demo inventory
+const demoInventory = [
+  {uid:'MDL-B7X3K1',name:'Scoring de Crédito PF — Varejo',area:'SUPEC — Crédito PF',family:'Machine Learning',technique:'XGBoost',crit:'N1',critName:'Crítico',score:4.0,regulatory:'Basileia III',status:'pending',date:'12/04/2025',owner:'Ana Lima'},
+  {uid:'MDL-C2M8P4',name:'Modelo de Previsão de Inadimplência Consignado',area:'DIREC — Crédito Consignado',family:'Estatístico Clássico',technique:'Regressão Logística',crit:'N2',critName:'Alto',score:3.5,regulatory:'IFRS 9',status:'pending',date:'10/04/2025',owner:'Carlos Mota'},
+  {uid:'MDL-A5R1Q9',name:'VaR de Carteira de Renda Fixa',area:'DIRIN — Risco de Mercado',family:'Matemático/Financeiro',technique:'Simulação Histórica',crit:'N1',critName:'Crítico',score:4.2,regulatory:'Basileia III',status:'approved',date:'05/04/2025',owner:'Fernanda Souza'},
+  {uid:'MDL-E9T6H2',name:'Classificação de Risco de Fornecedores',area:'DIVCO — Compras',family:'Machine Learning',technique:'Random Forest',crit:'N3',critName:'Médio',score:2.8,regulatory:'Nenhum',status:'pending',date:'08/04/2025',owner:'Roberto Silva'},
+  {uid:'MDL-F4W2L7',name:'Agente LLM — Análise de Contratos',area:'DIJUR — Jurídico',family:'IA Generativa/LLM',technique:'Claude (RAG)',crit:'N2',critName:'Alto',score:3.7,regulatory:'Nenhum',status:'approved',date:'01/04/2025',owner:'Patricia Nunes'},
+];
+
+// ══════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════
+const pageTitles = {
+  catalog:    ['Nova Catalogação', 'Informe as fontes e deixe os agentes fazerem o trabalho'],
+  validation: ['Área de Validação de Modelos', 'Fila de validação e ratificação'],
+  bi:         ['Painel BI', 'Inventário executivo e analítico'],
+  saibamais:  ['Saiba Mais', 'Como o ModelScan funciona — guia completo'],
+  storage:    ['Onde ficam os arquivos', 'Mapa de armazenamento e acesso por perfil'],
+};
+
+function showPage(id, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(navEl) navEl.classList.add('active');
+  const t = pageTitles[id];
+  if(t) { el('topbar-title').textContent=t[0]; el('topbar-sub').textContent=t[1]; }
+  if(id==='validation') renderValTable();
+  if(id==='bi') renderBITable();
 }
 
+// ══════════════════════════════════════════════════
+// WIZARD
+// ══════════════════════════════════════════════════
+function goStep(n) {
+  if(n===2) {
+    const nm=v('model-name'),ar=v('model-area'),ow=v('model-owner'),oe=v('owner-email'),ve=v('val-email');
+    if(!nm||!ar||!ow||!oe||!ve){alert('😅 Ops! Preencha todos os campos obrigatórios (*) para continuar.');return;}
+  }
+  [1,2,3,4].forEach(i=>{
+    el('wp'+i).classList.toggle('active',i===n);
+    const ws=el('ws'+i);
+    ws.classList.remove('active','done');
+    if(i===n) ws.classList.add('active');
+    if(i<n)  { ws.classList.add('done'); ws.querySelector('.ws-num').textContent='✓'; }
+    else ws.querySelector('.ws-num').textContent=i;
+  });
+}
+
+// ══════════════════════════════════════════════════
+// SOURCES
+// ══════════════════════════════════════════════════
+function togSrc(e){
+  e.classList.toggle('sel');
+  const s=e.dataset.src;
+  sources=e.classList.contains('sel')?[...new Set([...sources,s])]:sources.filter(x=>x!==s);
+}
+
+// ══════════════════════════════════════════════════
+// FILES
+// ══════════════════════════════════════════════════
+function handleFiles(fl){
+  Array.from(fl).forEach(f=>{if(!files.find(x=>x.name===f.name))files.push(f);});
+  renderFiles();
+}
+function renderFiles(){
+  el('file-list').innerHTML=files.map((f,i)=>`
+    <div class="fi">
+      <span class="fi-ico">${ficon(f.name)}</span>
+      <span class="fi-nm">${f.name}</span>
+      <span class="fi-sz">${fbytes(f.size)}</span>
+      <button class="fi-rm" onclick="rmFile(${i})">×</button>
+    </div>`).join('');
+}
+function rmFile(i){files.splice(i,1);renderFiles();}
+function ficon(n){return ({pdf:'📄',doc:'📝',docx:'📝',py:'🐍',r:'📊',ipynb:'📓',md:'📋',csv:'📊',txt:'📄'}[n.split('.').pop().toLowerCase()])||'📎';}
+function fbytes(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB';}
+
+// ══════════════════════════════════════════════════
+// LINKS
+// ══════════════════════════════════════════════════
+function addLink(){
+  const inp=el('link-input'),val=inp.value.trim();
+  if(!val)return;
+  if(!links.includes(val)){links.push(val);renderLinks();}
+  inp.value='';
+}
+function renderLinks(){
+  el('link-chips').innerHTML=links.map((l,i)=>`
+    <div class="chip">
+      <span class="chip-t" title="${l}">${l}</span>
+      <button class="chip-r" onclick="rmLink(${i})">×</button>
+    </div>`).join('');
+}
+function rmLink(i){links.splice(i,1);renderLinks();}
 function toggleKey(){const i=el('api-key');i.type=i.type==='password'?'text':'password';}
-function togSrc(b){b.classList.toggle('sel');const s=b.dataset.s;sources=b.classList.contains('sel')?[...sources,s]:sources.filter(x=>x!==s);}
-
-function handleFiles(fl){Array.from(fl).forEach(f=>{if(!files.find(x=>x.name===f.name))files.push(f);});renderFiles();}
-function removeFile(i){files.splice(i,1);renderFiles();}
-function renderFiles(){el('flist').innerHTML=files.map((f,i)=>`<div class="fi"><span class="fii">${fIcon(f.name)}</span><span class="fin">${f.name}</span><span class="fis">${fSz(f.size)}</span><button class="frm" onclick="removeFile(${i})">×</button></div>`).join('');}
-function fIcon(n){const e=n.split('.').pop().toLowerCase();return{pdf:'📄',doc:'📝',docx:'📝',py:'🐍',r:'📊',ipynb:'📓',md:'📋',csv:'📊',txt:'📄'}[e]||'📎';}
-function fSz(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB';}
-
-function addLink(){const i=el('linkin'),val=i.value.trim();if(!val)return;if(!links.includes(val)){links.push(val);renderLinks();}i.value='';}
-function removeLink(i){links.splice(i,1);renderLinks();}
-function renderLinks(){el('chips').innerHTML=links.map((l,i)=>`<div class="chip"><span title="${l}">${l}</span><button class="crm" onclick="removeLink(${i})">×</button></div>`).join('');}
 
 document.addEventListener('DOMContentLoaded',()=>{
-  el('linkin').addEventListener('keydown',e=>{if(e.key==='Enter')addLink();});
-  const dz=el('dz');
-  dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='var(--blue)';});
-  dz.addEventListener('dragleave',()=>{dz.style.borderColor='';});
-  dz.addEventListener('drop',e=>{e.preventDefault();dz.style.borderColor='';handleFiles(e.dataTransfer.files);});
+  el('link-input').addEventListener('keydown',e=>{if(e.key==='Enter')addLink();});
+  const z=el('drop-zone');
+  z.addEventListener('dragover',e=>{e.preventDefault();z.style.borderColor='var(--blue)';});
+  z.addEventListener('dragleave',()=>{z.style.borderColor='';});
+  z.addEventListener('drop',e=>{e.preventDefault();z.style.borderColor='';handleFiles(e.dataTransfer.files);});
+  renderValTable();
+  renderBITable();
 });
 
+// ══════════════════════════════════════════════════
+// ANALYSIS
+// ══════════════════════════════════════════════════
 async function startAnalysis(){
-  goTo(3);
-  for(let i=1;i<=5;i++){
-    if(i>1){el(`as${i-1}`).classList.remove('active');el(`as${i-1}`).classList.add('done');}
-    el(`as${i}`).classList.add('active');
-    await delay(i===2?2000:1300);
+  goStep(3);
+  const sids=['as1','as2','as3','as4','as5'];
+  for(let i=0;i<sids.length;i++){
+    if(i>0){el(sids[i-1]).classList.remove('active');el(sids[i-1]).classList.add('done');}
+    el(sids[i]).classList.add('active');
+    await wait(i===1?2000:1300);
   }
   const key=v('api-key');
-  result=key?await analyzeClaude(key):buildDemo();
+  result=key?await callClaude(key):buildDemo();
   el('as5').classList.remove('active');el('as5').classList.add('done');
-  el('spin').style.display='none';
-  el('a-t').textContent='Análise concluída';
-  el('a-s').textContent='Model Card gerado. Redirecionando para moderação...';
-  await delay(1000);
-  renderCard(result);
-  goTo(4);
+  el('spinner').style.display='none';
+  el('atitle').textContent='Pronto! Seu Model Card foi gerado ✨';
+  el('asub').textContent='Revise as informações e confirme quando estiver tudo certo.';
+  await wait(1000);
+  renderModelCard(result);
+  goStep(4);
 }
 
-async function analyzeClaude(key){
-  const name=v('model-name'),area=v('model-area'),owner=v('model-owner'),desc=v('model-desc'),ctx=v('ctx');
-  let ftx='';
-  for(const f of files){try{const t=await readText(f);ftx+=`\n\n--- ARQUIVO: ${f.name} ---\n${t.substring(0,3500)}`;}catch(e){}}
-  const prompt=`Você é um agente especializado em catalogação de modelos da Instituição Financeira.
-Analise as informações e retorne APENAS JSON válido, sem texto adicional, sem markdown.
+// ── CLAUDE API ──
+async function callClaude(key){
+  const nm=v('model-name'),ar=v('model-area'),ow=v('model-owner');
+  let txt='';
+  for(const f of files){try{const t=await readText(f);txt+=`\n\n--- ARQUIVO: ${f.name} ---\n${t.substring(0,4000)}`;}catch(e){}}
+
+  const prompt=`Você é um agente especializado em catalogação de modelos em instituições financeiras brasileiras. Analise as informações e gere um Model Card em JSON puro, sem markdown, sem backticks.
 
 DADOS:
-- Modelo: ${name}
-- Área: ${area}
-- Owner: ${owner}
-- Descrição: ${desc||'(não fornecida)'}
+- Modelo: ${nm}
+- Área: ${ar}
+- Owner: ${ow}
 - Fontes: ${sources.join(', ')||'não especificadas'}
 - Links: ${links.join(', ')||'nenhum'}
-- Contexto: ${ctx||'(nenhum)'}
-${ftx?`\nARQUIVOS:${ftx}`:''}
+- Contexto: ${v('extra-ctx')||'nenhum'}
+${txt?`\nARQUIVOS:${txt}`:''}
 
-JSON (estrutura exata, sem markdown):
-{"family":"Estatístico Clássico|Matemático/Financeiro|Especialista/Julgamental|Machine Learning|IA Generativa/LLM","technique":"técnica principal","description":"3-5 frases técnicas","platform":"ambiente inferido","inputs":"variáveis de entrada principais","outputs":"saídas e tipo de decisão","autonomy":"grau de automação","regulatory":"uso regulatório (Basileia III, IFRS 9, CMN 4557, Bacen, Res.4966 ou Nenhum identificado)","scores":{"D1_impacto_financeiro":1,"D2_exposicao_regulatoria":1,"D3_autonomia_decisoria":1,"D4_opacidade":1,"D5_abrangencia":1,"D6_maturidade":1},"weighted_score":0,"criticality_level":"N1","criticality_name":"Crítico","tags":[],"controls":[{"text":"","type":"crit"}],"validation_scope":"escopo de validação recomendado","confidence":50,"confidence_note":"explicação"}`;
+Retorne SOMENTE este JSON (sem mais nada):
+{"family":"Estatístico Clássico|Matemático/Financeiro|Especialista/Julgamental|Machine Learning|IA Generativa/LLM","technique":"string","description":"string 3-5 frases técnicas","platform":"string","inputs":"string","outputs":"string","autonomy":"string","regulatory":"string ou Nenhum identificado","scores":{"D1":1,"D2":1,"D3":1,"D4":1,"D5":1,"D6":1},"weighted_score":0.0,"criticality_level":"N1|N2|N3|N4|N5","criticality_name":"Crítico|Alto|Médio|Baixo|Mínimo","tags":["tag1"],"controls":[{"text":"string","type":"crit|warn|ok"}],"validation_scope":"string descrevendo escopo","confidence":50,"confidence_note":"string"}`;
+
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})
+    });
     const data=await res.json();
     if(data.error)throw new Error(data.error.message);
     const raw=data.content.map(b=>b.text||'').join('');
     const r=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    r.model_name=v('model-name');r.model_area=v('model-area');r.model_owner=v('model-owner');r.owner_email=v('owner-email');r.valid_email=v('valid-email');
+    r.model_name=nm;r.model_area=ar;r.model_owner=ow;
     return r;
-  }catch(e){console.error(e);const d=buildDemo();d.confidence=0;d.confidence_note='Erro na API. Modo demonstração.';return d;}
+  }catch(e){
+    console.error(e);
+    const d=buildDemo();d.confidence=0;d.confidence_note='Erro na API. Exibindo demonstração.';return d;
+  }
+}
+
+function buildDemo(){
+  return{
+    model_name:v('model-name')||'Scoring de Crédito PF',
+    model_area:v('model-area')||'SUPEC — Crédito PF',
+    model_owner:v('model-owner')||'Model Owner',
+    family:'Machine Learning',
+    technique:'Gradient Boosting (XGBoost)',
+    description:'Modelo de machine learning para estimação de probabilidade de default (PD) em carteiras de crédito pessoa física. Processa variáveis comportamentais, cadastrais e de bureau para gerar score individual de risco. A saída subsidia decisões de concessão e precificação no segmento varejo, com alçada automática definida pela política vigente. Treinado com janela histórica de 24 meses e recalibração semestral.',
+    platform:'Python + Databricks (MLflow)',
+    inputs:'Score bureau, histórico de pagamentos, renda declarada, tempo de relacionamento, perfil transacional',
+    outputs:'Score PD (0–1000), faixa de risco (A–G), recomendação de limite',
+    autonomy:'Decisão automática até R$ 50 mil; revisão humana em alçadas superiores',
+    regulatory:'Basileia III — RWA (IRB simplificado) / IFRS 9 — ECL',
+    scores:{D1:4,D2:4,D3:4,D4:3,D5:5,D6:3},
+    weighted_score:3.90,
+    criticality_level:'N1',criticality_name:'Crítico',
+    tags:['crédito-pf','pd-model','varejo','basileia-iii','xgboost','databricks','ifrs9'],
+    controls:[
+      {text:'Monitoramento contínuo de PSI, KS e Gini com alertas mensais',type:'crit'},
+      {text:'Validação independente integral anual com Nota de Risco de Modelo',type:'crit'},
+      {text:'Plano de contingência (fallback model) documentado e testado semestralmente',type:'crit'},
+      {text:'Análise de viés e disparate impact a cada recalibração',type:'warn'},
+      {text:'SHAP values auditáveis para decisões contestadas',type:'warn'},
+      {text:'Aprovação do Comitê de Modelos para alterações metodológicas',type:'ok'}
+    ],
+    validation_scope:'Validação Profunda Integral (N1): revisão conceitual, auditoria de dados, backtesting ≥24 meses, testes de estresse, análise de fairness, explicabilidade (SHAP/LIME), use test e controles compensatórios.',
+    confidence:72,
+    confidence_note:'Confiança moderada-alta. Campos de abrangência estimados por padrão do setor.'
+  };
 }
 
 function readText(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsText(f);});}
 
-function buildDemo(){
-  return{model_name:v('model-name')||'Modelo Demonstração',model_area:v('model-area')||'Área não informada',model_owner:v('model-owner')||'Owner não informado',owner_email:v('owner-email')||'owner@instituicao.gov.br',valid_email:v('valid-email')||'validacao@instituicao.gov.br',family:'Machine Learning',technique:'Gradient Boosting (XGBoost)',description:'Modelo de machine learning baseado em gradient boosting para estimação de probabilidade de default (PD) em carteiras de crédito pessoa física. Processa variáveis comportamentais, cadastrais e de bureau de crédito gerando score de risco individual. A saída subsidia decisões de concessão e precificação no segmento varejo, com alçada automática definida pela política de crédito vigente.',platform:'Python + Databricks (MLflow Registry)',inputs:'Score bureau externo, histórico de pagamentos, renda declarada, tempo de relacionamento, perfil transacional 12M',outputs:'Score PD (0–1000), faixa de risco (A–G), recomendação de limite',autonomy:'Decisão automática até R$ 50 mil; revisão humana em alçadas superiores',regulatory:'Basileia III — RWA varejo (IRB simplificado) / IFRS 9 — ECL stage assessment',scores:{D1_impacto_financeiro:4,D2_exposicao_regulatoria:4,D3_autonomia_decisoria:4,D4_opacidade:4,D5_abrangencia:5,D6_maturidade:3},weighted_score:4.0,criticality_level:'N1',criticality_name:'Crítico',tags:['crédito-pf','pd-model','varejo','basileia-iii','xgboost','databricks','ifrs9'],controls:[{text:'Monitoramento contínuo de PSI, KS e Gini com alertas mensais e reporte ao Comitê de Modelos',type:'crit'},{text:'Validação independente integral anual com emissão de Nota de Risco de Modelo e rating formal',type:'crit'},{text:'Plano de contingência (fallback model) documentado e testado semestralmente',type:'crit'},{text:'Revisão de viés e disparate impact a cada recalibração ou mudança de política de crédito',type:'warn'},{text:'SHAP values auditáveis para 100% das decisões passíveis de contestação',type:'warn'},{text:'Aprovação formal do Comitê de Modelos antes de qualquer alteração metodológica',type:'ok'}],validation_scope:'Validação Profunda Integral (N1): revisão conceitual completa, auditoria de dados (data leakage, viés amostral), backtesting ≥24 meses, testes de estresse, análise de fairness, explicabilidade (SHAP/LIME), use test e controles compensatórios. Emissão de Nota de Risco de Modelo com rating formal. Frequência: anual + extraordinária a qualquer alteração relevante.',confidence:72,confidence_note:'Confiança moderada-alta: tipo de modelo e uso regulatório identificados. Autonomia e abrangência estimados por contexto institucional.'};
-}
+// ══════════════════════════════════════════════════
+// RENDER MODEL CARD
+// ══════════════════════════════════════════════════
+function genUID(){return 'MDL-'+Math.random().toString(36).substr(2,6).toUpperCase();}
 
-function renderCard(r){
+function renderModelCard(r){
   const ts=new Date().toLocaleString('pt-BR');
-  el('mc-fam').textContent=r.family;
-  el('mc-nm').textContent=r.model_name;
-  el('mc-id').textContent=`ID: MDL-${Date.now().toString(36).toUpperCase()} · ${ts}`;
-  el('cring').className=`cring ${r.criticality_level}`;
-  el('clv').textContent=r.criticality_level;
-  el('cnm').textContent=r.criticality_name;
-  el('mc-desc').textContent=r.description;
-  el('mc-area').textContent=r.model_area;
-  el('mc-owner').textContent=r.model_owner;
-  el('mc-tech').textContent=r.technique;
-  el('mc-plat').textContent=r.platform;
-  el('mc-inp').textContent=r.inputs;
-  el('mc-out').textContent=r.outputs;
-  el('mc-aut').textContent=r.autonomy;
-  el('mc-reg').textContent=r.regulatory;
-  el('srows').innerHTML=Object.entries(r.scores||{}).map(([k,val])=>`<div class="srow"><div class="sdim">${DL[k]||k}</div><div class="strk"><div class="sfil" style="width:${(val/5)*100}%"></div></div><div class="sval">${val}/5</div></div>`).join('');
-  const c=r.confidence||50;
-  el('cv').textContent=c+'%';
-  el('cfil').style.width=c+'%';
-  el('mc-tags').innerHTML=(r.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
-  el('mc-ctls').innerHTML=(r.controls||[]).map(c=>`<div class="ctl ${c.type||''}">${c.text}</div>`).join('');
-  el('mc-sc').textContent=r.validation_scope;
-  el('mcft').textContent=`Gerado automaticamente em ${ts} · Aguardando moderação`;
+  const uid=r.uid||genUID();
+  r.uid=uid; r.ts=ts;
+
+  const dimMap={D1:'D1 · Impacto Financeiro',D2:'D2 · Exposição Regulatória',D3:'D3 · Autonomia Decisória',D4:'D4 · Opacidade',D5:'D5 · Abrangência',D6:'D6 · Maturidade'};
+
+  const html=`
+  <div class="mc-wrap" id="mc-wrap">
+    <div class="mc-hero">
+      <div class="mc-hero-top">
+        <div>
+          <div class="mc-uid"><div class="mc-uid-dot"></div>${uid}</div>
+          <div class="mc-hero-name">${r.model_name}</div>
+          <div class="mc-hero-family">${r.family} · ${r.technique}</div>
+        </div>
+        <div class="mc-crit-block c${r.criticality_level}">
+          <div class="mc-crit-ring">
+            <div class="mc-crit-n">${r.criticality_level}</div>
+            <div class="mc-crit-lbl">NÍVEL</div>
+          </div>
+          <div class="mc-crit-name">${r.criticality_name}</div>
+        </div>
+      </div>
+      <div class="mc-hero-meta">
+        <div class="mc-meta-item"><div class="mc-meta-label">Área</div><div class="mc-meta-value">${r.model_area}</div></div>
+        <div class="mc-meta-item"><div class="mc-meta-label">Owner</div><div class="mc-meta-value">${r.model_owner}</div></div>
+        <div class="mc-meta-item"><div class="mc-meta-label">Gerado em</div><div class="mc-meta-value">${ts}</div></div>
+        <div class="mc-meta-item"><div class="mc-meta-label">Confiança IA</div><div class="mc-meta-value">${r.confidence}%</div></div>
+      </div>
+    </div>
+
+    <div class="mc-body">
+      <div class="mc-section">
+        <div class="mc-sec-header"><div class="mc-sec-title">Descrição e Finalidade</div><div class="mc-sec-line"></div></div>
+        <div class="mc-desc-text">${r.description}</div>
+      </div>
+
+      <div class="mc-section">
+        <div class="mc-sec-header"><div class="mc-sec-title">Identificação</div><div class="mc-sec-line"></div></div>
+        <div class="ic-grid">
+          <div class="ic"><div class="ic-l">Técnica Principal</div><div class="ic-v">${r.technique}</div></div>
+          <div class="ic"><div class="ic-l">Plataforma / Ambiente</div><div class="ic-v">${r.platform}</div></div>
+          <div class="ic"><div class="ic-l">Inputs Principais</div><div class="ic-v">${r.inputs}</div></div>
+          <div class="ic"><div class="ic-l">Outputs / Decisão</div><div class="ic-v">${r.outputs}</div></div>
+          <div class="ic"><div class="ic-l">Autonomia Decisória</div><div class="ic-v">${r.autonomy}</div></div>
+          <div class="ic"><div class="ic-l">Uso Regulatório</div><div class="ic-v">${r.regulatory}</div></div>
+          <div class="ic"><div class="ic-l">Fontes Declaradas</div><div class="ic-v">${sources.length?sources.join(', '):'Não especificadas'}</div></div>
+          <div class="ic"><div class="ic-l">Chave Única</div><div class="ic-v" style="font-family:var(--mono);color:var(--blue)">${uid}</div></div>
+        </div>
+      </div>
+
+      <div class="mc-section">
+        <div class="mc-sec-header"><div class="mc-sec-title">Pontuação de Criticidade</div><div class="mc-sec-line"></div></div>
+        <div class="score-rows">
+          ${Object.entries(r.scores||{}).map(([k,vv])=>`
+            <div class="score-row">
+              <div class="sc-dim">${dimMap[k]||k}</div>
+              <div class="sc-track"><div class="sc-fill" style="width:${(vv/5)*100}%"></div></div>
+              <div class="sc-val">${vv}/5</div>
+            </div>`).join('')}
+        </div>
+        <div class="score-total">
+          <div class="st-l">Pontuação Ponderada Final</div>
+          <div class="st-v">${(r.weighted_score||0).toFixed(2)}</div>
+        </div>
+        <div class="conf-row">
+          <div class="conf-l">Confiança da análise</div>
+          <div class="conf-v">${r.confidence}%</div>
+          <div class="conf-bar"><div class="conf-fill" style="width:${r.confidence}%"></div></div>
+        </div>
+        <div class="conf-note">${r.confidence_note||''}</div>
+      </div>
+
+      <div class="mc-section">
+        <div class="mc-sec-header"><div class="mc-sec-title">Tags</div><div class="mc-sec-line"></div></div>
+        <div class="tags">${(r.tags||[]).map(t=>`<div class="tag">${t}</div>`).join('')}</div>
+      </div>
+
+      <div class="mc-section">
+        <div class="mc-sec-header"><div class="mc-sec-title">Controles Recomendados</div><div class="mc-sec-line"></div></div>
+        <div class="ctrl-list">${(r.controls||[]).map(c=>`<div class="ctrl-item ${c.type||''}">${c.text}</div>`).join('')}</div>
+      </div>
+
+      <div class="mc-section">
+        <div class="mc-sec-header"><div class="mc-sec-title">Escopo de Validação</div><div class="mc-sec-line"></div></div>
+        <div class="mc-desc-text">${r.validation_scope}</div>
+      </div>
+
+      <!-- MESSAGING -->
+      <div class="mc-section">
+        <div class="mc-sec-header"><div class="mc-sec-title">Mensageria de Conclusão</div><div class="mc-sec-line"></div></div>
+        <div style="font-size:13px;color:var(--g500);margin-bottom:16px">Notificações geradas automaticamente para o Model Owner e para a Área de Validação.</div>
+        <div class="msg-tabs">
+          <div class="mtab active" onclick="showMsgTab('owner',this)">📧 Para o Model Owner</div>
+          <div class="mtab" onclick="showMsgTab('val',this)">📧 Para Validação de Modelos</div>
+        </div>
+        <div class="mcontent active" id="mc-owner">
+          <div class="mrec"><div class="mrec-l">Para:</div><input type="email" id="to-owner" value="${v('owner-email')}"></div>
+          <div class="mprev">
+            <div class="mprev-bar"><div class="mpd mpd1"></div><div class="mpd mpd2"></div><div class="mpd mpd3"></div></div>
+            <div class="mto">Para: ${v('owner-email')}</div>
+            <div class="msubj">[ModelScan] Catalogação concluída — ${r.model_name} | ${r.criticality_level}</div>
+            <div class="mbody">${buildOwnerEmail(r,uid,ts)}</div>
+          </div>
+        </div>
+        <div class="mcontent" id="mc-val">
+          <div class="mrec"><div class="mrec-l">Para:</div><input type="email" id="to-val" value="${v('val-email')}"></div>
+          <div class="mprev">
+            <div class="mprev-bar"><div class="mpd mpd1"></div><div class="mpd mpd2"></div><div class="mpd mpd3"></div></div>
+            <div class="mto">Para: ${v('val-email')}</div>
+            <div class="msubj">[ModelScan] Novo modelo — ${r.model_name} | ${r.criticality_level} — Ação requerida</div>
+            <div class="mbody">${buildValEmail(r,uid,ts)}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODERAÇÃO -->
+      <div class="modsec">
+        <div class="modsec-title">Sua revisão faz a diferença</div>
+        <div class="modsec-sub">Confira se as informações estão corretas. Ajuste o que precisar e confirme. Se algo estiver bem diferente do modelo real, use "Solicito revisão" — sem problema nenhum! 😊</div>
+        <div class="frow" style="margin-bottom:14px">
+          <div class="field" style="margin:0"><label>Corrigir Técnica Principal</label><input type="text" id="mod-tech" placeholder="Confirme ou corrija..."></div>
+          <div class="field" style="margin:0"><label>Corrigir Autonomia Decisória</label>
+            <select id="mod-aut">
+              <option value="">— manter sugerido —</option>
+              <option value="100% automatizado, sem revisão humana">100% automatizado</option>
+              <option value="Revisão humana apenas em exceções">Revisão humana em exceções</option>
+              <option value="Aprovação humana sistemática">Aprovação humana sistemática</option>
+              <option value="Subsídio analítico — decisão é humana">Subsídio analítico</option>
+              <option value="Apenas informativo / monitoramento">Apenas informativo</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Observações do Owner (opcional — fique à vontade!)</label><textarea id="mod-notes" placeholder="Adicione qualquer correção, contexto ou comentário que achar importante para a área de validação..."></textarea></div>
+
+```
+    <div class="field" style="margin-bottom:0">
+      <label>Decisão</label>
+      <div class="dec-btns">
+        <button class="dec-btn approve" id="btn-approve" onclick="setDec('approve')">✓ Confirmo — tudo certo!</button>
+        <button class="dec-btn reject"  id="btn-reject"  onclick="setDec('reject')">↩ Solicito revisão</button>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goStep(2)">← Reenviar Fontes</button>
+      <button class="btn btn-primary" id="btn-fin" onclick="finalize()" disabled>Finalizar e Registrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="mc-footer">
+  <div class="mc-footer-left" id="mc-foot">Gerado em ${ts} · Aguardando moderação do Model Owner · ${uid}</div>
+  <div class="mc-footer-right">
+    <button class="btn-exp" onclick="exportJSON()">JSON</button>
+    <button class="btn-exp" onclick="exportTXT()">TXT</button>
+    <button class="btn-exp" onclick="window.print()">PDF</button>
+  </div>
+</div>
+```
+
+  </div>`;
+
+el(‘mc-container’).innerHTML=html;
 }
 
-function setDec(d){decision=d;el('btn-app').classList.toggle('sel',d==='approve');el('btn-rej').classList.toggle('sel',d==='reject');el('btn-fin').disabled=false;}
+function buildOwnerEmail(r,uid,ts){
+return `Prezado(a) ${r.model_owner},
 
-function finalizeCard(){
-  if(!decision||!result)return;
-  const techOvr=v('mod-tech'),autOvr=el('mod-aut').value,obs=v('mod-obs');
-  if(techOvr)result.technique=techOvr;
-  if(autOvr)result.autonomy=autOvr;
-  result.moderation={decision,observations:obs,moderatedAt:new Date().toISOString()};
-  const ts=new Date().toLocaleString('pt-BR');
-  const ok=decision==='approve';
-  el('mcft').textContent=`${ok?'CONFIRMADA':'REVISÃO SOLICITADA'} pelo Model Owner — ${result.model_owner} — ${ts}`;
-  el('mod-notice').style.display='none';
-  el('btn-fin').disabled=true;
-  el('btn-fin').textContent=ok?'✓ Registrado':'↩ Revisão solicitada';
-  genMessages();
-  renderSummary();
-  goTo(5);
+Tudo certo! A catalogação do seu modelo foi concluída com sucesso. 🎉
+
+RESUMO DO MODEL CARD
+────────────────────────────────────
+ID            : ${uid}
+Modelo        : ${r.model_name}
+Área          : ${r.model_area}
+Família       : ${r.family}
+Técnica       : ${r.technique}
+Criticidade   : ${r.criticality_level} — ${r.criticality_name}
+Pontuação     : ${(r.weighted_score||0).toFixed(2)} / 5,00
+Gerado em     : ${ts}
+────────────────────────────────────
+
+PRÓXIMOS PASSOS (prazo: 5 dias úteis):
+
+1. Acesse o Model Card na plataforma ModelScan.
+1. Revise os campos preenchidos pelos agentes.
+1. Corrija o que precisar e confirme.
+
+${getCritOwner(r.criticality_level)}
+
+Qualquer dúvida, fale com a Área de Validação: ${v(‘val-email’)}
+
+Equipe ModelScan — Gestão de Risco de Modelo`;
 }
 
-function genMessages(){
-  if(!result)return;
-  const r=result,ts=new Date().toLocaleString('pt-BR'),ok=r.moderation?.decision==='approve',obs=r.moderation?.observations||'';
-  const toOw=`${r.model_owner} <${r.owner_email}>`;
-  const sjOw=`[ModelScan] ${ok?'Catalogação concluída':'Revisão solicitada'} — ${r.model_name}`;
-  const btOw=ok
-?`Prezado(a) ${r.model_owner},
+function buildValEmail(r,uid,ts){
+return `Equipe de Validação de Modelos,
 
-Seu modelo foi catalogado com sucesso no inventário institucional da Instituição Financeira.
+Novo modelo catalogado. Atenção conforme criticidade ${r.criticality_level}.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RESUMO DA FICHA REGISTRADA
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Modelo:          ${r.model_name}
-Área:            ${r.model_area}
-Família:         ${r.family}
-Técnica:         ${r.technique}
-Plataforma:      ${r.platform}
-Nível:           ${r.criticality_level} — ${r.criticality_name}
-Pontuação:       ${r.weighted_score}
-Regulatório:     ${r.regulatory}
-Autonomia:       ${r.autonomy}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ID              : ${uid}
+Modelo          : ${r.model_name}
+Área            : ${r.model_area}
+Owner           : ${r.model_owner} (${v(‘owner-email’)})
+Família         : ${r.family}
+Técnica         : ${r.technique}
+Plataforma      : ${r.platform}
+Criticidade     : ${r.criticality_level} — ${r.criticality_name}
+Pontuação       : ${(r.weighted_score||0).toFixed(2)} / 5,00
+Uso Regulatório : ${r.regulatory}
+Confiança IA    : ${r.confidence}%
+Gerado em       : ${ts}
 
-PRÓXIMOS PASSOS
-A ficha foi encaminhada à Área de Validação e Monitoração de Modelos para enfileiramento conforme criticidade ${r.criticality_level}. O prazo e o escopo da validação seguem o Programa de Gestão de Risco de Modelo vigente.
+PONTUAÇÃO POR DIMENSÃO:
+${Object.entries(r.scores||{}).map(([k,vv])=>`  ${k}: ${vv}/5`).join(’\n’)}
 
-Para ajustes nos dados registrados, entre em contato com a área de validação informando o número do modelo.
+CONTROLES RECOMENDADOS:
+${(r.controls||[]).map(c=>`  [${(c.type||'').toUpperCase()}] ${c.text}`).join(’\n’)}
 
-Esta mensagem foi gerada automaticamente pelo ModelScan — Instituição Financeira.
-Registrado em: ${ts}`
-:`Prezado(a) ${r.model_owner},
-
-A revisão do Model Card do seu modelo foi solicitada. A ficha retornará à Área de Validação e Monitoração para ajustes antes de ser incluída no inventário oficial.
-
-Modelo:    ${r.model_name}
-Motivo:    ${obs||'Não especificado — verificar junto à área de validação.'}
-
-Você será notificado(a) quando a ficha revisada estiver disponível para nova moderação.
-
-Esta mensagem foi gerada automaticamente pelo ModelScan — Instituição Financeira.
-Solicitado em: ${ts}`;
-
-  const toVl=`Área de Validação e Monitoração de Modelos <${r.valid_email}>`;
-  const sjVl=`[ModelScan] ${ok?`Novo modelo na fila de validação — ${r.criticality_level} — `:`Revisão pendente — `}${r.model_name}`;
-  const btVl=ok
-?`Equipe de Validação e Monitoração de Modelos,
-
-Um novo modelo foi catalogado e confirmado pelo Model Owner. Segue ficha completa para enfileiramento e priorização.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-FICHA DO MODELO
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Nome:       ${r.model_name}
-Área:       ${r.model_area}
-Owner:      ${r.model_owner} (${r.owner_email})
-Família:    ${r.family}
-Técnica:    ${r.technique}
-Plataforma: ${r.platform}
-Nível:      ${r.criticality_level} — ${r.criticality_name}
-Pontuação:  ${r.weighted_score} (ponderada 6 dimensões)
-Confiança:  ${r.confidence}%
-Inputs:     ${r.inputs}
-Outputs:    ${r.outputs}
-Autonomia:  ${r.autonomy}
-Regulat.:   ${r.regulatory}
-Tags:       ${(r.tags||[]).join(', ')}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ESCOPO DE VALIDAÇÃO RECOMENDADO
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ESCOPO DE VALIDAÇÃO:
 ${r.validation_scope}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CONTROLES RECOMENDADOS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${(r.controls||[]).map((c,i)=>`${i+1}. [${c.type.toUpperCase()}] ${c.text}`).join('\n')}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AÇÕES REQUERIDAS:
+${getActionsVal(r.criticality_level)}
 
-${r.criticality_level==='N1'||r.criticality_level==='N2'?`⚠ CRITICIDADE ${r.criticality_level} — PRIORIZAR alocação de recurso de validação.\n`:''}Ação requerida: Incluir na fila de validação conforme criticidade ${r.criticality_level}.
+STATUS: Aguardando moderação do Owner (prazo: 5 dias úteis).
+Tags: ${(r.tags||[]).join(’, ’)}
 
-Esta mensagem foi gerada automaticamente pelo ModelScan — Instituição Financeira.
-Catalogado em: ${ts}`
-:`Equipe de Validação e Monitoração de Modelos,
-
-O Model Owner solicitou revisão do Model Card abaixo. A ficha não foi confirmada e requer ajustes antes de seguir para validação.
-
-Modelo:  ${r.model_name}
-Área:    ${r.model_area}
-Owner:   ${r.model_owner} (${r.owner_email})
-Nível:   ${r.criticality_level} — ${r.criticality_name}
-
-OBSERVAÇÕES DO OWNER:
-${obs||'Não especificado.'}
-
-Ação requerida: Revisar a ficha e retornar ao Model Owner para nova confirmação.
-
-Esta mensagem foi gerada automaticamente pelo ModelScan — Instituição Financeira.
-Solicitado em: ${ts}`;
-
-  el('mto-ow').textContent=toOw;el('msj-ow').textContent=sjOw;el('mbt-ow').textContent=btOw;
-  el('mto-vl').textContent=toVl;el('msj-vl').textContent=sjVl;el('mbt-vl').textContent=btVl;
-  el('mp-sub').textContent=`${r.model_name} · ${r.criticality_level} — ${r.criticality_name} · ${new Date().toLocaleString('pt-BR')}`;
-  window._msgs={owner:{to:toOw,subject:sjOw,body:btOw},valid:{to:toVl,subject:sjVl,body:btVl}};
+ModelScan — Gestão de Risco de Modelo`;
 }
 
-function showTab(t){['owner','valid'].forEach(x=>{el(`tab-${x}`).classList.toggle('active',x===t);el(`tb-${x}`).style.display=x===t?'block':'none';});}
-
-function copyMsg(t){if(!window._msgs)return;const m=window._msgs[t];const txt=`Para: ${m.to}\nAssunto: ${m.subject}\n\n${m.body}`;navigator.clipboard.writeText(txt).then(()=>alert('Mensagem copiada!')).catch(()=>alert('Copie manualmente.'));}
-function exportMsgTXT(t){if(!window._msgs)return;const m=window._msgs[t];dlBlob(new Blob([`Para: ${m.to}\nAssunto: ${m.subject}\n\n${m.body}`],{type:'text/plain;charset=utf-8'}),`msg-${t}-${san(result?.model_name)}.txt`);}
-
-function renderSummary(){
-  if(!result)return;const r=result,ok=r.moderation?.decision==='approve';
-  el('sum-grid').innerHTML=`
-    <div class="mc"><div class="mcl">Modelo</div><div class="mcv">${r.model_name}</div></div>
-    <div class="mc"><div class="mcl">Criticidade</div><div class="mcv">${r.criticality_level} — ${r.criticality_name}</div></div>
-    <div class="mc"><div class="mcl">Família</div><div class="mcv">${r.family}</div></div>
-    <div class="mc"><div class="mcl">Pontuação Ponderada</div><div class="mcv">${r.weighted_score}</div></div>
-    <div class="mc"><div class="mcl">Status</div><div class="mcv" style="color:${ok?'var(--green)':'var(--orange)'}">${ok?'✓ Confirmado pelo Owner':'↩ Revisão solicitada'}</div></div>
-    <div class="mc"><div class="mcl">Confiança da Análise</div><div class="mcv">${r.confidence}%</div></div>`;
-  el('concl-txt').textContent=ok?`Model Card de "${r.model_name}" registrado (${r.criticality_level} — ${r.criticality_name}). Notificações geradas para o Owner e para a Área de Validação.`:`Revisão solicitada para "${r.model_name}". Ficha retorna à equipe de validação.`;
+function getCritOwner(lvl){
+return ({
+N1:‘⚠️ Modelo N1 — CRÍTICO\nA Área de Validação entrará em contato em até 10 dias úteis após sua confirmação.’,
+N2:‘📌 Modelo N2 — ALTO\nValidação estruturada será agendada em até 30 dias úteis.’,
+N3:‘📋 Modelo N3 — MÉDIO\nRevisão técnica no próximo ciclo regular de validação.’,
+N4:‘✅ Modelo N4 — BAIXO\nMonitoramento periódico e autodeclaração anual.’,
+N5:‘📁 Modelo N5 — MÍNIMO\nRegistro no inventário concluído.’
+}[lvl]||’’);
 }
 
-function exportJSON(){if(!result)return;dlBlob(new Blob([JSON.stringify(result,null,2)],{type:'application/json'}),`model-card-${san(result.model_name)}.json`);}
+function getActionsVal(lvl){
+return ({
+N1:’  1. [URGENTE] Incluir na fila prioritária de validação integral.\n  2. Contatar Owner em até 10 dias úteis.\n  3. Verificar plano de contingência (fallback model).\n  4. Emitir Nota de Risco preliminar para o Comitê.’,
+N2:’  1. Incluir na fila de validação estruturada.\n  2. Agendar com Owner em até 30 dias úteis.\n  3. Solicitar backtesting mínimo 12 meses.’,
+N3:’  1. Registrar no inventário oficial.\n  2. Incluir no ciclo de revisão técnica simplificada (24 meses).’,
+N4:’  1. Registrar no inventário.\n  2. Incluir na amostra de revisão aleatória (10-15%/ano).’,
+N5:’  1. Registrar com status “Mínimo”.\n  2. Programar revisão passiva em 36 meses.’
+}[lvl]||’’);
+}
+
+// MSG TABS
+function showMsgTab(tab,btn){
+document.querySelectorAll(’.mtab’).forEach(t=>t.classList.remove(‘active’));
+document.querySelectorAll(’.mcontent’).forEach(c=>c.classList.remove(‘active’));
+btn.classList.add(‘active’);
+el(‘mc-’+tab).classList.add(‘active’);
+}
+
+// MODERATION
+function setDec(d){
+decision=d;
+document.getElementById(‘btn-approve’).classList.toggle(‘sel’,d===‘approve’);
+document.getElementById(‘btn-reject’).classList.toggle(‘sel’,d===‘reject’);
+document.getElementById(‘btn-fin’).disabled=false;
+}
+
+function finalize(){
+if(!decision)return;
+const tech=v(‘mod-tech’),aut=v(‘mod-aut’),notes=v(‘mod-notes’);
+if(tech&&result)result.technique=tech;
+if(aut&&result)result.autonomy=aut;
+const ts=new Date().toLocaleString(‘pt-BR’);
+const ow=v(‘model-owner’);
+const status=decision===‘approve’
+?`✓ Confirmado por ${ow} em ${ts} · ${result.uid}`
+:`↩ Revisão solicitada por ${ow} em ${ts}`;
+const foot=document.getElementById(‘mc-foot’);
+if(foot)foot.textContent=status;
+document.getElementById(‘btn-fin’).textContent=decision===‘approve’?‘✓ Registrado!’:‘↩ Revisão solicitada’;
+document.getElementById(‘btn-fin’).disabled=true;
+
+// Add to inventory
+if(decision===‘approve’&&result){
+demoInventory.unshift({
+uid:result.uid,name:result.model_name,area:result.model_area,
+family:result.family,technique:result.technique,
+crit:result.criticality_level,critName:result.criticality_name,
+score:result.weighted_score,regulatory:result.regulatory,
+status:‘pending’,date:new Date().toLocaleDateString(‘pt-BR’),
+owner:result.model_owner
+});
+el(‘val-badge’).textContent=demoInventory.filter(m=>m.status===‘pending’).length;
+}
+
+const banner=el(‘sbanner’);
+banner.classList.add(‘show’);
+el(‘sb-txt’).innerHTML=decision===‘approve’
+?`<strong>Tudo certo! Model Card registrado com sucesso.</strong> Notificações enviadas para ${v('owner-email')} e ${v('val-email')}. Chave única: <strong>${result?.uid||'—'}</strong>`
+:`<strong>Revisão solicitada.</strong> A Área de Validação foi notificada.${notes?' Observação registrada.':''}`;
+window.scrollTo({top:0,behavior:‘smooth’});
+}
+
+// ══════════════════════════════════════════════════
+// VALIDATION TABLE
+// ══════════════════════════════════════════════════
+let currentFilter=‘all’;
+function filterVal(f,btn){
+currentFilter=f;
+document.querySelectorAll(’.filter-btn’).forEach(b=>b.classList.remove(‘active’));
+btn.classList.add(‘active’);
+renderValTable();
+}
+
+function renderValTable(){
+let data=demoInventory;
+if(currentFilter===‘pending’)  data=data.filter(m=>m.status===‘pending’);
+if(currentFilter===‘approved’) data=data.filter(m=>m.status===‘approved’);
+if([‘N1’,‘N2’,‘N3’,‘N4’,‘N5’].includes(currentFilter)) data=data.filter(m=>m.crit===currentFilter);
+
+el(‘val-tbody’).innerHTML=data.map(m=>` <tr> <td><span style="font-family:var(--mono);font-size:11px;color:var(--blue)">${m.uid}</span></td> <td class="td-model-name">${m.name}</td> <td style="color:var(--g500)">${m.area}</td> <td>${m.family}</td> <td><span class="badge badge-${m.crit}">${m.crit} ${m.critName}</span></td> <td>${m.status==='approved'?'<span style="color:var(--green);font-weight:500">✓ Ratificado</span>':'<span style="color:var(--orange);font-weight:500">⏳ Aguardando</span>'}</td> <td style="color:var(--g500);font-size:12px">${m.date}</td> <td><button class="btn btn-sm btn-secondary td-link" onclick="openModal('${m.uid}')">Apreciar →</button></td> </tr>`).join(’’);
+}
+
+function openModal(uid){
+currentModelId=uid;
+const m=demoInventory.find(x=>x.uid===uid);
+if(!m)return;
+el(‘modal-uid’).textContent=uid;
+el(‘modal-name’).textContent=m.name;
+el(‘modal-area’).textContent=m.area+’ · ‘+m.family+’ · Owner: ’+m.owner;
+el(‘modal-card-preview’).innerHTML=` <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--off);border:1px solid var(--g100);border-radius:var(--r-m)"> <div style="flex:1"> <div style="font-size:12px;color:var(--g300);margin-bottom:2px">Criticidade identificada pelos agentes</div> <div style="font-size:14px;font-weight:600;color:var(--g900)">${m.crit} — ${m.critName}</div> <div style="font-size:12px;color:var(--g500);margin-top:2px">Pontuação ponderada: ${m.score} / 5,00 · Uso regulatório: ${m.regulatory}</div> </div> <span class="badge badge-${m.crit}" style="font-size:13px;padding:6px 14px">${m.crit}</span> </div>`;
+el(‘val-modal’).classList.add(‘open’);
+}
+
+function closeModal(){
+el(‘val-modal’).classList.remove(‘open’);
+el(‘val-crit’).value=’’;el(‘val-tech’).value=’’;
+el(‘val-analyst’).value=’’;el(‘val-parecer’).value=’’;
+}
+
+function addUnitComment(){
+const un=v(‘unit-name’),up=v(‘unit-person’),uo=v(‘unit-obs’);
+if(!un||!uo)return;
+const init=(up||un).substring(0,2).toUpperCase();
+const html=`<div class="unit-comment">
+<div class="uc-header">
+<div class="uc-avatar">${init}</div>
+<div class="uc-name">${up||un} — ${un}</div>
+<div class="uc-time">agora</div>
+</div>
+<div class="uc-text">${uo}</div>
+
+  </div>`;
+  el('unit-comments').innerHTML+=html;
+  el('unit-name').value='';el('unit-person').value='';el('unit-obs').value='';
+}
+
+function ratifyModel(action){
+if(!currentModelId)return;
+const parecer=v(‘val-parecer’);
+if(!parecer&&action===‘approve’){alert(‘Por favor, registre o parecer técnico antes de ratificar.’);return;}
+const m=demoInventory.find(x=>x.uid===currentModelId);
+if(m){
+const newCrit=v(‘val-crit’);
+if(newCrit)m.crit=newCrit;
+m.status=action===‘approve’?‘approved’:‘pending’;
+}
+closeModal();
+renderValTable();
+el(‘val-badge’).textContent=demoInventory.filter(m=>m.status===‘pending’).length;
+alert(action===‘approve’?`✅ Model Card ${currentModelId} ratificado com sucesso!`:`↩ Correção solicitada ao Owner para ${currentModelId}.`);
+}
+
+// ══════════════════════════════════════════════════
+// BI TABLE
+// ══════════════════════════════════════════════════
+function renderBITable(){
+el(‘bi-tbody’).innerHTML=demoInventory.map(m=>` <tr> <td><span style="font-family:var(--mono);font-size:11px;color:var(--blue)">${m.uid}</span></td> <td class="td-model-name">${m.name}</td> <td style="font-size:12px;color:var(--g500)">${m.family}</td> <td><span class="badge badge-${m.crit}">${m.crit} ${m.critName}</span></td> <td style="font-family:var(--mono);font-size:12px">${m.score.toFixed(2)}</td> <td style="font-size:12px;color:var(--g500)">${m.regulatory}</td> <td>${m.status==='approved'?'<span style="color:var(--green);font-size:12px;font-weight:500">✓ Ratificado</span>':'<span style="color:var(--orange);font-size:12px;font-weight:500">⏳ Aguardando</span>'}</td> </tr>`).join(’’);
+
+// Update KPIs
+const total=demoInventory.length;
+const n1=demoInventory.filter(m=>m.crit===‘N1’).length;
+const rat=demoInventory.filter(m=>m.status===‘approved’).length;
+const pend=demoInventory.filter(m=>m.status===‘pending’).length;
+el(‘bi-total’).textContent=total;
+el(‘bi-n1’).textContent=n1;
+el(‘bi-rat’).textContent=rat;
+el(‘bi-pend’).textContent=pend;
+}
+
+// ══════════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════════
+function exportJSON(){
+if(!result)return;
+dl(new Blob([JSON.stringify(result,null,2)],{type:‘application/json’}),`model-card-${slug(result.model_name)}.json`);
+}
 function exportTXT(){
-  if(!result)return;const r=result;
-  const t=[`MODEL CARD — ${r.model_name}`,'─'.repeat(56),`Área: ${r.model_area}`,`Owner: ${r.model_owner}`,`Criticidade: ${r.criticality_level} — ${r.criticality_name}`,`Pontuação: ${r.weighted_score}`,``,`Família: ${r.family}`,`Técnica: ${r.technique}`,`Plataforma: ${r.platform}`,``,`Descrição:`,r.description,``,`Inputs: ${r.inputs}`,`Outputs: ${r.outputs}`,`Autonomia: ${r.autonomy}`,`Regulatório: ${r.regulatory}`,``,`Pontuação por dimensão:`,...Object.entries(r.scores||{}).map(([k,v])=>`  ${DL[k]||k}: ${v}/5`),``,`Confiança: ${r.confidence}%`,``,`Controles:`,...(r.controls||[]).map(c=>`  [${c.type.toUpperCase()}] ${c.text}`),``,`Escopo de validação:`,r.validation_scope,``,`Tags: ${(r.tags||[]).join(', ')}`,`Gerado: ${new Date().toLocaleString('pt-BR')}`];
-  dlBlob(new Blob([t.join('\n')],{type:'text/plain;charset=utf-8'}),`model-card-${san(r.model_name)}.txt`);
+if(!result)return;
+const r=result;
+const txt=`MODEL CARD — ${r.model_name}\nChave Única: ${r.uid||'—'}\n${'─'.repeat(56)}\nGerado em: ${new Date().toLocaleString('pt-BR')}\nOwner: ${r.model_owner} · Área: ${r.model_area}\n\nCRITICIDADE: ${r.criticality_level} — ${r.criticality_name}\nPontuação: ${(r.weighted_score||0).toFixed(2)} / 5,00\n\nFAMÍLIA: ${r.family}\nTÉCNICA: ${r.technique}\nPLATAFORMA: ${r.platform}\n\nDESCRIÇÃO:\n${r.description}\n\nINPUTS: ${r.inputs}\nOUTPUTS: ${r.outputs}\nAUTONOMIA: ${r.autonomy}\nUSO REGULATÓRIO: ${r.regulatory}\n\nPONTUAÇÃO:\n${Object.entries(r.scores||{}).map(([k,vv])=>`  ${k}: ${vv}/5`).join('\n')}\n\nCONFIANÇA: ${r.confidence}%\n${r.confidence_note}\n\nCONTROLES:\n${(r.controls||[]).map(c=>`  [${(c.type||’’).toUpperCase()}] ${c.text}`).join('\n')}\n\nESCOPO DE VALIDAÇÃO:\n${r.validation_scope}\n\nTAGS: ${(r.tags||[]).join(', ')}`;
+dl(new Blob([txt],{type:‘text/plain;charset=utf-8’}),`model-card-${slug(r.model_name)}.txt`);
 }
-function dlBlob(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();URL.revokeObjectURL(a.href);}
-function san(s){return(s||'modelo').toLowerCase().replace(/[^a-z0-9]/g,'-').substring(0,40);}
-function newCard(){
-  files=[];links=[];sources=[];result=null;decision=null;
-  ['model-name','model-area','model-owner','owner-email','valid-email','model-desc','ctx','mod-tech','mod-obs'].forEach(id=>{const e=el(id);if(e)e.value='';});
-  document.querySelectorAll('.sb.sel').forEach(b=>b.classList.remove('sel'));
-  el('flist').innerHTML='';el('chips').innerHTML='';
-  el('btn-fin').disabled=true;el('btn-fin').textContent='Finalizar e Gerar Mensageria →';
-  el('btn-app').classList.remove('sel');el('btn-rej').classList.remove('sel');
-  el('mod-notice').style.display='';
-  goTo(1);
+function dl(blob,name){const a=document.createElement(‘a’);a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href);}
+function slug(s){return (s||‘modelo’).toLowerCase().replace(/[^a-z0-9]/g,’-’).substring(0,40);}
+
+// ══════════════════════════════════════════════════
+// FAQ
+// ══════════════════════════════════════════════════
+function toggleFaq(btn){
+btn.closest(’.faq-item’).classList.toggle(‘open’);
 }
+
+// ══════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════
+function el(id){return document.getElementById(id);}
+function v(id){return (document.getElementById(id)||{}).value?.trim()||’’;}
+function wait(ms){return new Promise(r=>setTimeout(r,ms));}
 </script>
 
 </body>
