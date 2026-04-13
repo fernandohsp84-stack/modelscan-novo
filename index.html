@@ -7,7 +7,7 @@
 <title>ModelScan — Gestão de Risco de Modelo</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ─── TOKENS ─────────────────────────────── */
+/* --- TOKENS ------------------------------- */
 :root {
   --blue:    #005CA9;
   --blue-d:  #003F7A;
@@ -43,7 +43,7 @@
   --mob-h: 52px; /* mobile topbar */
 }
 
-/* ─── RESET ──────────────────────────────── */
+/* — RESET –––––––––––––––– */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; }
 body {
@@ -56,7 +56,7 @@ line-height: 1.5;
 /* NO overflow:hidden on body — breaks iOS Safari scroll */
 }
 
-/* ─── DESKTOP LAYOUT (sidebar + main) ────── */
+/* — DESKTOP LAYOUT (sidebar + main) —— */
 /* Uses a classic CSS technique: sidebar fixed, main with margin */
 .sidebar {
 position: fixed;
@@ -111,7 +111,7 @@ padding: 28px 36px 60px;
 
 /* Mobile content padding reset */
 
-/* ─── MOBILE NAV (bottom bar) ────────────── */
+/* — MOBILE NAV (bottom bar) ––––––– */
 .mob-topbar {
 /* display controlled by inline style (mobile) and media query override (desktop) */
 position: sticky;
@@ -182,7 +182,7 @@ color: #fff;
 border-left-color: var(–orange);
 }
 
-/* ─── SIDEBAR CONTENT ────────────────────── */
+/* — SIDEBAR CONTENT ––––––––––– */
 .sb-brand {
 padding: 18px 16px 14px;
 border-bottom: 1px solid rgba(255,255,255,.08);
@@ -277,7 +277,7 @@ color: rgba(255,255,255,.2);
 font-family: var(–mono);
 }
 
-/* ─── TOPBAR CONTENT ─────────────────────── */
+/* — TOPBAR CONTENT ———————– */
 .tb-group { flex: 1; min-width: 0; }
 .tb-title {
 font-size: 15px;
@@ -319,7 +319,7 @@ display: flex; align-items: center; justify-content: center;
 font-size: 11px; font-weight: 600; color: #fff;
 }
 
-/* ─── PAGES ──────────────────────────────── */
+/* — PAGES –––––––––––––––– */
 .page { display: none; }
 .page.active { display: block; animation: fadeUp .25s ease both; }
 
@@ -328,7 +328,7 @@ from { opacity:0; transform:translateY(8px); }
 to   { opacity:1; transform:translateY(0); }
 }
 
-/* ─── PAGE HEADER ────────────────────────── */
+/* — PAGE HEADER ––––––––––––– */
 .ph { margin-bottom: 24px; }
 .ph-eye {
 font-size: 10px; font-weight: 600;
@@ -344,7 +344,7 @@ margin-bottom: 5px;
 }
 .ph-desc { font-size: 13px; color: var(–g500); line-height: 1.6; max-width: 580px; }
 
-/* ─── CARDS ──────────────────────────────── */
+/* — CARDS –––––––––––––––– */
 .card {
 background: var(–white);
 border: 1px solid var(–g100);
@@ -361,13 +361,13 @@ padding-bottom: 9px;
 border-bottom: 1px solid var(–g100);
 }
 
-/* ─── GRID ───────────────────────────────── */
+/* — GRID ——————————— */
 .g2  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .g3  { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
 .g4  { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
 .gap14 { margin-bottom: 14px; }
 
-/* ─── FORM ───────────────────────────────── */
+/* — FORM ——————————— */
 .field { margin-bottom: 14px; }
 .field:last-child { margin-bottom: 0; }
 .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
@@ -411,7 +411,7 @@ transition: all .15s; flex-shrink: 0;
 }
 .btn-eye:hover { color: var(–g700); }
 
-/* ─── NOTICE ─────────────────────────────── */
+/* — NOTICE —————————–– */
 .notice {
 display: flex; gap: 10px;
 padding: 12px 14px;
@@ -426,7 +426,7 @@ margin-bottom: 16px;
 .notice.warn  { background:var(–amb-l);   border-color:rgba(154,98,0,.2);  color:var(–amber); }
 .n-ico { flex-shrink:0; font-size:15px; margin-top:1px; }
 
-/* ─── BUTTONS ────────────────────────────── */
+/* — BUTTONS —————————— */
 .btn {
 display: inline-flex; align-items: center;
 justify-content: center; gap: 7px;
@@ -453,13 +453,13 @@ justify-content: space-between;
 margin-top: 22px; gap: 10px;
 }
 
-/* ─── WIZARD ─────────────────────────────── */
+/* — WIZARD —————————–– */
 .wizard {
 display: flex;
 background: var(–off);
 border-radius: var(–rl) var(–rl) 0 0;
-margin: -20px -22px 22px;
-padding: 0 22px;
+margin: 0 0 22px 0;
+padding: 0 4px;
 border-bottom: 1px solid var(–g100);
 overflow-x: auto;
 -webkit-overflow-scrolling: touch;
@@ -508,7 +508,7 @@ color: var(–g300); white-space: nowrap;
 .wp { display: none; }
 .wp.active { display: block; animation: fadeUp .22s ease both; }
 
-/* ─── SOURCES ────────────────────────────── */
+/* — SOURCES —————————— */
 .src-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
 .src-tile {
 border: 1.5px solid var(–g200);
@@ -528,7 +528,7 @@ touch-action: manipulation;
 .src-lbl { font-size: 10px; font-weight: 500; color: var(–g500); text-align: center; }
 .src-tile.sel .src-lbl { color: var(–blue); }
 
-/* ─── UPLOAD ─────────────────────────────── */
+/* — UPLOAD —————————–– */
 .upz {
 border: 1.5px dashed var(–g200);
 border-radius: var(–rm);
@@ -582,7 +582,7 @@ font-family: var(–mono); font-size: 11px; color: var(–blue);
 .chip-r { background: none; border: none; color: rgba(0,92,169,.4); cursor: pointer; font-size: 16px; line-height: 1; }
 .chip-r:hover { color: var(–red); }
 
-/* ─── ANALYSIS ───────────────────────────── */
+/* — ANALYSIS —————————– */
 .awrap { text-align: center; padding: 52px 0; }
 .spinner {
 width: 40px; height: 40px;
@@ -612,7 +612,7 @@ background: var(–g300); flex-shrink: 0; transition: background .3s;
 .as-l { font-size: 13px; font-weight: 500; color: var(–g900); }
 .as-s { font-size: 12px; color: var(–g300); margin-top: 2px; }
 
-/* ─── MODEL CARD ─────────────────────────── */
+/* — MODEL CARD ————————— */
 .mc {
 background: var(–white);
 border: 1px solid var(–g100);
@@ -807,7 +807,7 @@ border-radius: var(–rs); margin-bottom: 14px;
 .sb-txt { font-size: 13px; color: var(–green); line-height: 1.5; }
 .sb-txt strong { font-weight: 600; }
 
-/* ─── VALIDATION PAGE ────────────────────── */
+/* — VALIDATION PAGE ––––––––––– */
 .vfilters { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
 .fbtn {
 padding: 6px 13px; border-radius: 20px;
@@ -888,7 +888,7 @@ flex-shrink: 0;
 .uc-t  { font-size: 11px; color: var(–g300); margin-left: auto; font-family: var(–mono); }
 .uc-txt{ font-size: 13px; color: var(–g700); line-height: 1.6; }
 
-/* ─── BI DASHBOARD ───────────────────────── */
+/* — BI DASHBOARD ———————–– */
 .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
 .kpi {
 background: var(–white); border: 1px solid var(–g100);
@@ -934,7 +934,7 @@ align-items: center; justify-content: center;
 .dl-nm  { font-size: 11px; color: var(–g700); }
 .dl-v   { font-size: 11px; color: var(–g300); font-family: var(–mono); margin-left: auto; }
 
-/* ─── SAIBA MAIS ─────────────────────────── */
+/* — SAIBA MAIS ————————— */
 .sm-hero {
 background: linear-gradient(135deg, var(–blue-d), var(–blue-m));
 border-radius: var(–rxl); padding: 32px 36px;
@@ -997,7 +997,7 @@ user-select: none; -webkit-user-select: none; touch-action: manipulation;
 .faq-a { display: none; padding: 0 16px 12px; font-size: 13px; color: var(–g500); line-height: 1.7; border-top: 1px solid var(–g100); }
 .faq-i.open .faq-a { display: block; padding-top: 11px; }
 
-/* ─── STORAGE ────────────────────────────── */
+/* — STORAGE —————————— */
 .stor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .stor-item {
 background: var(–white); border: 1px solid var(–g100);
@@ -1014,7 +1014,7 @@ display: inline-block; margin-bottom: 5px;
 }
 .stor-d { font-size: 12px; color: var(–g500); line-height: 1.6; }
 
-/* ─── RESPONSIVE ─────────────────────────── */
+/* — RESPONSIVE ————————— */
 @media (max-width: 768px) {
 /* Mobile layout */
 .content { padding: 16px 14px 80px; }
@@ -1081,7 +1081,7 @@ display: inline-block; margin-bottom: 5px;
 </head>
 <body>
 
-<!-- ════════ SIDEBAR (desktop only) ════════ -->
+<!-- <!--  SIDEBAR (desktop only)  --> -->
 
 <nav class="sidebar">
   <div class="sb-brand">
@@ -1109,7 +1109,7 @@ display: inline-block; margin-bottom: 5px;
   <div class="sb-footer">v1.0 · 2025</div>
 </nav>
 
-<!-- ════════ MAIN WRAP ════════ -->
+<!-- <!--  MAIN WRAP  --> -->
 
 <div class="main-wrap">
 
@@ -1154,7 +1154,7 @@ display: inline-block; margin-bottom: 5px;
 
   <div class="content">
 
-  <!-- ══════════════ CATALOGAÇÃO ══════════════ -->
+  <!-- <!--  CATALOGAÇÃO  --> -->
 
   <div class="page active" id="page-catalog">
     <div class="card">
@@ -1169,7 +1169,7 @@ display: inline-block; margin-bottom: 5px;
       <div class="ws" id="ws4"><div class="ws-n">4</div><div class="ws-l">Model Card</div></div>
     </div>
 
-    <!-- ── WP1: Identificação ── -->
+    <!-- -- WP1: Identificação -- -->
     <div class="wp active" id="wp1">
       <div class="notice tip">
         <div class="n-ico">👋</div>
@@ -1238,7 +1238,7 @@ display: inline-block; margin-bottom: 5px;
       </div>
     </div>
 
-    <!-- ── WP2: Fontes ── -->
+    <!-- -- WP2: Fontes -- -->
     <div class="wp" id="wp2">
       <div class="notice tip">
         <div class="n-ico">📂</div>
@@ -1290,7 +1290,7 @@ display: inline-block; margin-bottom: 5px;
       </div>
     </div>
 
-    <!-- ── WP3: Análise ── -->
+    <!-- -- WP3: Análise -- -->
     <div class="wp" id="wp3">
       <div class="awrap">
         <div class="spinner" id="spinner"></div>
@@ -1306,7 +1306,7 @@ display: inline-block; margin-bottom: 5px;
       </div>
     </div>
 
-    <!-- ── WP4: Model Card ── -->
+    <!-- -- WP4: Model Card -- -->
     <div class="wp" id="wp4">
       <div class="sbanner" id="sbanner"><div style="font-size:18px">✅</div><div class="sb-txt" id="sb-txt">—</div></div>
       <div id="mc-container"></div>
@@ -1318,7 +1318,7 @@ display: inline-block; margin-bottom: 5px;
 
   </div><!-- /page-catalog -->
 
-  <!-- ══════════════ VALIDAÇÃO ══════════════ -->
+  <!-- <!--  VALIDAÇÃO  --> -->
 
   <div class="page" id="page-validation">
     <div class="ph">
@@ -1347,7 +1347,7 @@ display: inline-block; margin-bottom: 5px;
     </div>
   </div>
 
-  <!-- ══════════════ BI ══════════════ -->
+  <!-- <!--  BI  --> -->
 
   <div class="page" id="page-bi">
     <div class="ph">
@@ -1411,7 +1411,7 @@ display: inline-block; margin-bottom: 5px;
     </div>
   </div>
 
-  <!-- ══════════════ SAIBA MAIS ══════════════ -->
+  <!-- <!--  SAIBA MAIS  --> -->
 
   <div class="page" id="page-saibamais">
     <div class="sm-hero">
@@ -1441,7 +1441,7 @@ display: inline-block; margin-bottom: 5px;
     </div>
   </div>
 
-  <!-- ══════════════ STORAGE ══════════════ -->
+  <!-- <!--  STORAGE  --> -->
 
   <div class="page" id="page-storage">
     <div class="ph">
@@ -1474,7 +1474,7 @@ display: inline-block; margin-bottom: 5px;
   </div><!-- /content -->
 </div><!-- /main-wrap -->
 
-<!-- ════════ MODAL VALIDAÇÃO ════════ -->
+<!-- <!--  MODAL VALIDAÇÃO  --> -->
 
 <div class="modal-ov" id="val-modal">
   <div class="modal">
@@ -1518,9 +1518,9 @@ display: inline-block; margin-bottom: 5px;
 </div>
 
 <script>
-// ══════════════════════════════════════
+// 
 // STATE
-// ══════════════════════════════════════
+// 
 var files=[], links=[], sources=[], result=null, decision=null, currentModelId=null;
 
 var demoInventory=[
@@ -1531,9 +1531,9 @@ var demoInventory=[
   {uid:'MDL-F4W2L7',name:'Agente LLM — Contratos',area:'DIJUR',family:'IA Generativa/LLM',technique:'Claude (RAG)',crit:'N2',critName:'Alto',score:3.7,regulatory:'Nenhum',status:'approved',date:'01/04/2025',owner:'Patricia Nunes'},
 ];
 
-// ══════════════════════════════════════
+// 
 // NAV
-// ══════════════════════════════════════
+// 
 var pageTitles={
   catalog:    ['Nova Catalogação','Informe as fontes e deixe os agentes fazerem o trabalho'],
   validation: ['Área de Validação','Fila de validação e ratificação'],
@@ -1565,35 +1565,46 @@ function closeMobMenu(){
   g('mob-menu-btn').textContent='☰';
 }
 
-// ══════════════════════════════════════
+// 
 // WIZARD
-// ══════════════════════════════════════
+// 
 function goStep(n) {
-  if(n===2) {
-    var nm=v('model-name'), ar=v('model-area'), ow=v('model-owner'), oe=v('owner-email');
-    if(!nm || !ar || !ow) {
-      alert('Por favor, preencha: Nome do Modelo, Área e Model Owner.');
-      return;
+  try {
+    if(n===2) {
+      var nm=v('model-name'), ar=v('model-area'), ow=v('model-owner'), oe=v('owner-email');
+      if(!nm || !ar || !ow) {
+        alert('Por favor, preencha: Nome do Modelo, Área e Model Owner.');
+        return;
+      }
+      if(!oe) {
+        alert('Por favor, informe seu e-mail.');
+        return;
+      }
     }
-    if(!oe) {
-      alert('Por favor, informe seu e-mail para receber a notificação.');
-      return;
+    for(var i=1;i<=4;i++){
+      var wp=g('wp'+i);
+      if(wp) {
+        if(i===n) { wp.classList.add('active'); }
+        else { wp.classList.remove('active'); }
+      }
+      var ws=g('ws'+i);
+      if(ws) {
+        ws.classList.remove('active','done');
+        if(i===n) ws.classList.add('active');
+        if(i<n)  { ws.classList.add('done'); }
+        var wsn=ws.querySelector('.ws-n');
+        if(wsn) wsn.textContent=(i<n)?'✓':String(i);
+      }
     }
+    try { window.scrollTo({top:0,behavior:'smooth'}); } catch(e){ window.scrollTo(0,0); }
+  } catch(err) {
+    alert('Erro ao avançar: '+err.message);
   }
-  for(var i=1;i<=4;i++){
-    g('wp'+i).classList.toggle('active', i===n);
-    var ws=g('ws'+i);
-    ws.classList.remove('active','done');
-    if(i===n) ws.classList.add('active');
-    if(i<n)  { ws.classList.add('done'); ws.querySelector('.ws-n').textContent='✓'; }
-    else ws.querySelector('.ws-n').textContent=i;
-  }
-  window.scrollTo(0,0);
 }
 
-// ══════════════════════════════════════
+// 
 // SOURCES
-// ══════════════════════════════════════
+// 
 function togSrc(el){
   el.classList.toggle('sel');
   var s=el.dataset.src;
@@ -1601,9 +1612,9 @@ function togSrc(el){
   else { sources=sources.filter(function(x){return x!==s;}); }
 }
 
-// ══════════════════════════════════════
+// 
 // FILES
-// ══════════════════════════════════════
+// 
 function handleFiles(fl){
   Array.from(fl).forEach(function(f){
     if(!files.find(function(x){return x.name===f.name;})) files.push(f);
@@ -1619,9 +1630,9 @@ function rmFile(i){ files.splice(i,1); renderFiles(); }
 function ficon(n){ var e=n.split('.').pop().toLowerCase(); return {pdf:'📄',doc:'📝',docx:'📝',py:'🐍',r:'📊',ipynb:'📓',md:'📋',csv:'📊',txt:'📄'}[e]||'📎'; }
 function fbytes(b){ return b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB'; }
 
-// ══════════════════════════════════════
+// 
 // LINKS
-// ══════════════════════════════════════
+// 
 function addLink(){
   var inp=g('link-input'), val=inp.value.trim();
   if(!val) return;
@@ -1646,9 +1657,9 @@ document.addEventListener('DOMContentLoaded', function(){
   renderBI();
 });
 
-// ══════════════════════════════════════
+// 
 // ANALYSIS
-// ══════════════════════════════════════
+// 
 async function startAnalysis(){
   goStep(3);
   var sids=['as1','as2','as3','as4','as5'];
@@ -1723,9 +1734,9 @@ function buildDemo(){
 
 function readText(f){ return new Promise(function(res,rej){ var r=new FileReader(); r.onload=function(e){res(e.target.result);}; r.onerror=rej; r.readAsText(f); }); }
 
-// ══════════════════════════════════════
+// 
 // RENDER CARD
-// ══════════════════════════════════════
+// 
 function genUID(){ return 'MDL-'+Math.random().toString(36).substr(2,6).toUpperCase(); }
 
 function renderCard(r){
@@ -1881,9 +1892,9 @@ g(‘sb-txt’).innerHTML=decision===‘approve’
 window.scrollTo(0,0);
 }
 
-// ══════════════════════════════════════
+//
 // VALIDATION TABLE
-// ══════════════════════════════════════
+//
 var currentFilter=‘all’;
 function filterVal(f,btn){
 currentFilter=f;
@@ -1935,9 +1946,9 @@ g(‘val-badge’).textContent=demoInventory.filter(function(m){return m.status=
 alert(action===‘approve’?‘✅ Ratificado com sucesso!’:‘↩ Correção solicitada ao Owner.’);
 }
 
-// ══════════════════════════════════════
+//
 // BI
-// ══════════════════════════════════════
+//
 function renderBI(){
 g(‘bi-tbody’).innerHTML=demoInventory.map(function(m){
 return ‘<tr><td><span style="font-family:var(--mono);font-size:11px;color:var(--blue)">’+m.uid+’</span></td><td class="td-nm">’+m.name+’</td><td style="font-size:12px;color:var(--g500)">’+m.family+’</td><td><span class="badge b'+m.crit+'">’+m.crit+’ ‘+m.critName+’</span></td><td style="font-family:var(--mono);font-size:12px">’+m.score.toFixed(2)+’</td><td style="font-size:12px;color:var(--g500)">’+m.regulatory+’</td><td>’+(m.status===‘approved’?’<span style="color:var(--green);font-size:12px;font-weight:500">✓ Ratificado</span>’:’<span style="color:var(--orange);font-size:12px;font-weight:500">⏳ Aguardando</span>’)+’</td></tr>’;
@@ -1951,9 +1962,9 @@ g(‘bi-rat’).textContent=rat;
 g(‘bi-pend’).textContent=pend;
 }
 
-// ══════════════════════════════════════
+//
 // EXPORT
-// ══════════════════════════════════════
+//
 function exportJSON(){
 if(!result) return;
 dl(new Blob([JSON.stringify(result,null,2)],{type:‘application/json’}),‘model-card-’+slug(result.model_name)+’.json’);
@@ -1961,20 +1972,20 @@ dl(new Blob([JSON.stringify(result,null,2)],{type:‘application/json’}),‘mo
 function exportTXT(){
 if(!result) return;
 var r=result;
-var txt=‘MODEL CARD — ‘+r.model_name+’\nChave: ‘+r.uid+’\n’+‘─’.repeat(48)+’\nGerado: ‘+new Date().toLocaleString(‘pt-BR’)+’\nOwner: ‘+r.model_owner+’ · ‘+r.model_area+’\n\nNÍVEL: ‘+r.criticality_level+’ — ‘+r.criticality_name+’\nPontuação: ‘+((r.weighted_score||0).toFixed(2))+’ / 5,00\n\nTÉCNICA: ‘+r.technique+’\nPLATAFORMA: ‘+r.platform+’\n\nDESCRIÇÃO:\n’+r.description+’\n\nINPUTS: ‘+r.inputs+’\nOUTPUTS: ‘+r.outputs+’\nAUTONOMIA: ‘+r.autonomy+’\nREGULATÓRIO: ‘+r.regulatory+’\n\nDIMENSÕES:\n’+Object.entries(r.scores||{}).map(function(kv){return ’  ‘+kv[0]+’: ‘+kv[1]+’/5’;}).join(’\n’)+’\n\nCONFIANÇA: ‘+r.confidence+’%\n\nCONTROLES:\n’+( r.controls||[]).map(function(c){return ’  [’+( c.type||’’).toUpperCase()+’] ‘+c.text;}).join(’\n’)+’\n\nESCOPO:\n’+r.validation_scope+’\n\nTAGS: ‘+(r.tags||[]).join(’, ‘);
+var txt=‘MODEL CARD — ‘+r.model_name+’\nChave: ‘+r.uid+’\n’+’-’.repeat(48)+’\nGerado: ‘+new Date().toLocaleString(‘pt-BR’)+’\nOwner: ‘+r.model_owner+’ · ‘+r.model_area+’\n\nNÍVEL: ‘+r.criticality_level+’ — ‘+r.criticality_name+’\nPontuação: ‘+((r.weighted_score||0).toFixed(2))+’ / 5,00\n\nTÉCNICA: ‘+r.technique+’\nPLATAFORMA: ‘+r.platform+’\n\nDESCRIÇÃO:\n’+r.description+’\n\nINPUTS: ‘+r.inputs+’\nOUTPUTS: ‘+r.outputs+’\nAUTONOMIA: ‘+r.autonomy+’\nREGULATÓRIO: ‘+r.regulatory+’\n\nDIMENSÕES:\n’+Object.entries(r.scores||{}).map(function(kv){return ’  ‘+kv[0]+’: ‘+kv[1]+’/5’;}).join(’\n’)+’\n\nCONFIANÇA: ‘+r.confidence+’%\n\nCONTROLES:\n’+( r.controls||[]).map(function(c){return ’  [’+( c.type||’’).toUpperCase()+’] ‘+c.text;}).join(’\n’)+’\n\nESCOPO:\n’+r.validation_scope+’\n\nTAGS: ‘+(r.tags||[]).join(’, ‘);
 dl(new Blob([txt],{type:‘text/plain;charset=utf-8’}),‘model-card-’+slug(r.model_name)+’.txt’);
 }
 function dl(blob,name){ var a=document.createElement(‘a’); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href); }
 function slug(s){ return (s||‘modelo’).toLowerCase().replace(/[^a-z0-9]/g,’-’).substring(0,40); }
 
-// ══════════════════════════════════════
+//
 // FAQ
-// ══════════════════════════════════════
+//
 function toggleFaq(btn){ btn.closest(’.faq-i’).classList.toggle(‘open’); }
 
-// ══════════════════════════════════════
+//
 // UTILS
-// ══════════════════════════════════════
+//
 function g(id){ return document.getElementById(id); }
 function v(id){
 var el=document.getElementById(id);
