@@ -14,11 +14,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .hdr-brand { display: flex; align-items: center; gap: 10px; }
 .hdr-icon { width: 30px; height: 30px; background: #F47920; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .hdr-name { font-size: 18px; font-weight: 700; color: #fff; }
-.hdr-btn { background: rgba(255,255,255,.15); border: none; border-radius: 7px; width: 38px; height: 38px; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.hdr-btn { background: rgba(255,255,255,.15); border: none; border-radius: 7px; width: 38px; height: 38px; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; touch-action: manipulation; -webkit-appearance: none; }
 
 /* DROPDOWN */
 .menu { display: none; background: #003F7A; border-bottom: 3px solid #F47920; }
-.menu.open { display: block; }
+.menu.open { display: block !important; }
 .mitem { display: block; width: 100%; text-align: left; padding: 14px 20px; background: none; border: none; border-left: 3px solid transparent; color: rgba(255,255,255,.75); font-size: 15px; font-family: inherit; cursor: pointer; }
 .mitem.act { background: rgba(255,255,255,.1); border-left-color: #F47920; color: #fff; font-weight: 600; }
 
@@ -260,7 +260,7 @@ textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
 /* DESKTOP */
 @media(min-width:769px){
 body { display: flex; }
-.hdr, .menu { display: none !important; }
+.hdr { display: none !important; }
 #sidebar { display: flex !important; flex-direction: column; width: 240px; min-width: 240px; background: #003F7A; min-height: 100vh; position: sticky; top: 0; height: 100vh; overflow-y: auto; flex-shrink: 0; }
 #main-wrap { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 #dktop { display: flex !important; align-items: center; padding: 0 28px; height: 54px; background: #fff; border-bottom: 1px solid #DDE1E9; position: sticky; top: 0; z-index: 50; }
@@ -340,12 +340,14 @@ body { display: flex; }
   </div>
 
   <div class="pg on" id="pg-catalog">
-    <div class="steps">
+    <div style="background:#fff;border:1px solid #DDE1E9;border-radius:12px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden;">
+    <div class="steps" style="margin:0;">
       <div class="step on" id="st1"><div class="step-n">1</div><div class="step-l">Identificacao</div></div>
       <div class="step" id="st2"><div class="step-n">2</div><div class="step-l">Fontes</div></div>
       <div class="step" id="st3"><div class="step-n">3</div><div class="step-l">Analise</div></div>
       <div class="step" id="st4"><div class="step-n">4</div><div class="step-l">Model Card</div></div>
     </div>
+    <div style="padding:16px;">
 
 ```
 <div class="pnl on" id="pn1">
@@ -667,6 +669,10 @@ function toggleKey(){var i=g('api-key');i.type=i.type==='password'?'text':'passw
 document.addEventListener('DOMContentLoaded',function(){
   var li=g('linp');
   if(li)li.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addLink();}});
+  var mbtn=g('mbtn');
+  if(mbtn){
+    mbtn.addEventListener('touchend',function(e){e.preventDefault();openMenu();});
+  }
   renderVT(INV);
   renderBI();
 });
